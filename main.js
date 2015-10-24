@@ -16,9 +16,53 @@ Using a ssh client:
 Article: https://software.intel.com/en-us/html5/articles/intel-xdk-iot-edition-nodejs-templates
 */
 
+//var async = require('async');
+
 var mraa = require('mraa'); //require mraa
 console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the console
 
 var analogPin0 = new mraa.Aio(0); //setup access analog input Analog pin #0 (A0)
-var analogValue = analogPin0.read(); //read the value of the analog pin
-console.log(analogValue); //write the value of the analog pin to the console
+var digitalPin0 = new mraa.Gpio(5); //LED pin
+digitalPin0.dir(mraa.DIR_OUT);
+
+var arrayOfMeasurements = [];
+var tubes = [0];
+
+setInterval(runMeasurements(arrayOfMeasurements,tubes, saveToFile ), 60000);
+
+
+function runMeasurements(arg, tubes, callback) {
+    
+    ledOnOff(true);  
+    
+    //Turn this into an asyncronous series loop
+  for( var i = 0; i < tubes.length; i++) {
+      measureValue(tubes[i], function ( data) { arg[i] = data;});
+      
+  }
+    ledOnOff(false);
+    
+    
+    callback(arg);//Probably saves to a file or something
+}
+
+function measureValue(tubeNumber, callback) {
+    
+    //Multiplexer stuff
+    
+    var measurement = analogPin0.read(); //read the value of the analog pin
+    console.log(measurement); //write the value of the analog pin to the console
+    callback( measurement);
+    
+}
+
+function ledOnOff(boolOnOff) {
+    
+        digitalPin0.write(boolOnOff);
+    
+}
+    
+function saveToFile() {
+    
+    
+}
