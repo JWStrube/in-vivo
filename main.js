@@ -21,6 +21,9 @@ Article: https://software.intel.com/en-us/html5/articles/intel-xdk-iot-edition-n
 var mraa = require('mraa'); //require mraa
 console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the console
 
+var fs = require('fs');
+
+
 var analogPin0 = new mraa.Aio(0); //setup access analog input Analog pin #0 (A0)
 var digitalPin0 = new mraa.Gpio(5); //LED pin
 digitalPin0.dir(mraa.DIR_OUT);
@@ -28,6 +31,8 @@ digitalPin0.dir(mraa.DIR_OUT);
 var rawData = [];
 var realData = [];
 var tubes = [0];
+
+var path = "/tmp/output.txt";
 
 const MIN = 0.0; //Value recorded from unlit tube
 const MAX = 700.0; //Value recorded from lit empty tube
@@ -53,7 +58,7 @@ function runMeasurements(callback) {
   	tubes.forEach(measureValue(value));
 
     ledOnOff(0);
-    
+    rawDataConverter();
     
     callback();//Probably saves to a file or something
 }
@@ -75,6 +80,18 @@ function ledOnOff(boolOnOff) {
 }
     
 function saveToFile() {
-    
+    var stream fs.createWriteStream(path);
+    rawData.forEach(function(value){
+    	stream.write('[');
+    	stream.write(new Date().toString());
+    	stream.write('] Tube Number: ');
+    	stream.write(value);
+    	stream.write(' Data: ');
+    	stream.write(realData[value]);
+    	stream.write('\n');
+
+    });
+    stream.end();
+
     
 }
