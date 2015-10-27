@@ -25,34 +25,46 @@ var analogPin0 = new mraa.Aio(0); //setup access analog input Analog pin #0 (A0)
 var digitalPin0 = new mraa.Gpio(5); //LED pin
 digitalPin0.dir(mraa.DIR_OUT);
 
-var arrayOfMeasurements = [];
+var rawData = [];
+var realData = [];
 var tubes = [0];
 
-setInterval(runMeasurements(arrayOfMeasurements,tubes, saveToFile ), 60000);
+const MIN = 0.0; //Value recorded from unlit tube
+const MAX = 700.0; //Value recorded from lit empty tube
+const SCALE = (100/(MAX-MIN));
 
 
-function runMeasurements(arg, tubes, callback) {
-    
-    ledOnOff(true);  
-    
-    //Turn this into an asyncronous series loop
-  for( var i = 0; i < tubes.length; i++) {
-      measureValue(tubes[i], function ( data) { arg[i] = data;});
-      
-  }
-    ledOnOff(false);
-    
-    
-    callback(arg);//Probably saves to a file or something
+setInterval(runMeasurements( saveToFile ), 60000);
+
+function rawDataConverter() {
+	realData = rawData.forEach(function(value) { 
+		var data = (value-MIN)*SCALE;
+		data = Math.log(data);
+		return data;
+	                  });
+
 }
 
-function measureValue(tubeNumber, callback) {
+function runMeasurements(callback) {
+    
+    ledOnOff(1);  
+    
+    //Turn this into an asyncronous series loop
+  	tubes.forEach(measureValue(value));
+
+    ledOnOff(0);
+    
+    
+    callback();//Probably saves to a file or something
+}
+
+function measureValue(tubeNumber) {
     
     //Multiplexer stuff
     
-    var measurement = analogPin0.read(); //read the value of the analog pin
+    var measurement = analogPin0.readFloat(); //read the value of the analog pin
     console.log(measurement); //write the value of the analog pin to the console
-    callback( measurement);
+    rawData[tubeNumber] = measurement;
     
 }
 
