@@ -24,6 +24,8 @@ Review README.md file for in-depth information about web sockets communication
 
 */
 
+//var async = require('async');
+
 var mraa = require('mraa'); //require mraa
 console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the Intel XDK console
 //var myOnboardLed = new mraa.Gpio(3, false, true); //LED hooked up to digital pin (or built in pin on Galileo Gen1)
@@ -93,7 +95,6 @@ io.on('connection', function(socket) {
     });
     
 });
-
 
 http.listen(3000, function(){
     console.log('Web server Active listening on *:3000');

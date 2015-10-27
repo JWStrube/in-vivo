@@ -9,93 +9,93 @@
   "iot-tab": {
     "fileStatus": {
       "icon.png": {
-        "previousModTime": 1445917718232,
-        "modified": 1445917718232,
+        "previousModTime": 1445931352601,
+        "modified": 1445931352601,
         "seen": true,
         "name": "icon.png"
       },
       "LICENSE.md": {
-        "previousModTime": 1445917718215,
-        "modified": 1445917718215,
+        "previousModTime": 1445931352584,
+        "modified": 1445931352584,
         "seen": true,
         "name": "LICENSE.md"
       },
       "main.js": {
-        "previousModTime": 1445930175971,
-        "modified": 1445930175971,
+        "previousModTime": 1445965627761,
+        "modified": 1445965627761,
         "seen": true,
         "name": "main.js"
       },
       "package.json": {
-        "previousModTime": 1445917718242,
-        "modified": 1445917718242,
+        "previousModTime": 1445931356474,
+        "modified": 1445931356474,
         "seen": true,
         "name": "package.json"
       },
       "README.md": {
-        "previousModTime": 1445917718219,
-        "modified": 1445917718219,
+        "previousModTime": 1445931352587,
+        "modified": 1445931352587,
         "seen": true,
         "name": "README.md"
       },
       "webSocketsTemplate.xdk": {
-        "previousModTime": 1445917718245,
-        "modified": 1445917718245,
+        "previousModTime": 1445931356477,
+        "modified": 1445931356477,
         "seen": true,
         "name": "webSocketsTemplate.xdk"
       },
       "webSocketsTemplate.xdke": {
-        "previousModTime": 1445930179813,
-        "modified": 1445930179813,
+        "previousModTime": 1445966725908,
+        "modified": 1445966725908,
         "seen": true,
         "name": "webSocketsTemplate.xdke"
       },
       "webSocketsTemplate_1.2.0.xdke_bak": {
-        "previousModTime": 1445917718254,
-        "modified": 1445917718254,
+        "previousModTime": 1445931356486,
+        "modified": 1445931356486,
         "seen": true,
         "name": "webSocketsTemplate_1.2.0.xdke_bak"
       },
       "webSocketsTemplate_1.2.0.xdk_bak": {
-        "previousModTime": 1445917718251,
-        "modified": 1445917718251,
+        "previousModTime": 1445931356483,
+        "modified": 1445931356483,
         "seen": true,
         "name": "webSocketsTemplate_1.2.0.xdk_bak"
       },
       "websockets_client.png": {
-        "previousModTime": 1445917718258,
-        "modified": 1445917718258,
+        "previousModTime": 1445931356490,
+        "modified": 1445931356490,
         "seen": true,
         "name": "websockets_client.png"
       },
       "client/index.css": {
-        "previousModTime": 1445925601688,
-        "modified": 1445925601688,
+        "previousModTime": 1445966571879,
+        "modified": 1445966571879,
         "seen": true,
         "name": "client/index.css"
       },
       "client/index.html": {
-        "previousModTime": 1445924736552,
-        "modified": 1445924736552,
+        "previousModTime": 1445966722497,
+        "modified": 1445966722497,
         "seen": true,
         "name": "client/index.html"
       },
       "client/index.js": {
-        "previousModTime": 1445930333131,
-        "modified": 1445930333131,
+        "previousModTime": 1445966797957,
+        "modified": 1445966797957,
         "seen": true,
         "name": "client/index.js"
       },
       "xdk/project-info.json": {
-        "previousModTime": 1445917718263,
-        "modified": 1445917718263,
+        "previousModTime": 1445931356495,
+        "modified": 1445931356495,
         "seen": true,
         "name": "xdk/project-info.json"
       }
     },
     "boardFileStatus": {
       "client/index.js": {
-        "previousModTime": 1445930337006
+        "previousModTime": 1445966801288
       }
     }
   }

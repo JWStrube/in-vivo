@@ -17,7 +17,7 @@ $("#diode-link").on('click', function(e){
 });
 
 socket.on('diode read', function(msg){
-    //$("#diode-container span").text(msg.value);
+    $("#diode-container").text(msg.value.toString());
     $('#messages').prepend($('<li>Read Value: <span> - '+msg.value+'</span></li>'));
 });
 

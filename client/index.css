@@ -61,8 +61,8 @@ body {
 }
 
 #diode-container{
-    width: 4em;
-    height: 2.5em;
+    width: 3em;
+    height: 2em;
     margin-left: 1em;
     text-align: center;
 }
@@ -84,9 +84,11 @@ body {
     font-weight: bold;
 }
 
-#diode-container > span{
+#diode-container > span {
+    background-color: white;
+    border: 1px solid #7f8c8d;
     padding: 3em 0em;
-    color: white;
+    color: black;
     font-weight: bold;
 }
 
