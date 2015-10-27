@@ -60,6 +60,14 @@ body {
     text-align: center;
 }
 
+#diode-container{
+    width: 4em;
+    height: 2.5em;
+    margin-left: 1em;
+    text-align: center;
+}
+
+
 .off {
     background-color: #bdc3c7;
     border: 1px solid #7f8c8d;
@@ -76,6 +84,12 @@ body {
     font-weight: bold;
 }
 
+#diode-container > span{
+    padding: 3em 0em;
+    color: white;
+    font-weight: bold;
+}
+
 #led-link {
     margin: 1em 1em;
     color: #3498db;
@@ -85,7 +99,21 @@ body {
     border-radius: 5px;
 }
 
+#diode-link{
+    margin: 1em 1em;
+    color: #3498db;
+    font-weight: bold;
+    font-size: 1.3em;
+    border: 2px solid currentColor;
+    border-radius: 5px;
+}
+
+
 #led-link-container {
+    margin-top: 1em;
+}
+
+#diode-link-container{
     margin-top: 1em;
 }
 

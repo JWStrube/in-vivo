@@ -10,7 +10,7 @@
     <script src="socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div class="title">Web Sockets Client Console</div>
+    <div class="title">Litmus Edison </div>
     <div class="container">
         <span class="sub-title">Connected User(s)</span>
         <div id="user-container">
@@ -21,6 +21,11 @@
         <span class="sub-title">OnBoard LED status</span>
         <div id="led-container" class="off"><span>OFF</span></div>
         <div id="led-link-container"><a id="led-link">Toggle LED</a></div>
+    </div>
+    <div class="container">
+        <span class="sub-title">Read in Value (0.00-5.00)</span>
+        <div id="diode-link-container"><a id="diode-link">Read Value</a></div>
+        <div id="diode-container"><span>No Values Yet</span></div>
     </div>
 
     <span class="log-title">Log</span>

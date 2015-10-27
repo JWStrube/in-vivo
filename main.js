@@ -28,7 +28,9 @@ var mraa = require('mraa'); //require mraa
 console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the Intel XDK console
 //var myOnboardLed = new mraa.Gpio(3, false, true); //LED hooked up to digital pin (or built in pin on Galileo Gen1)
 var myOnboardLed = new mraa.Gpio(13); //LED hooked up to digital pin 13 (or built in pin on Intel Galileo Gen2 as well as Intel Edison)
-myOnboardLed.dir(mraa.DIR_OUT); //set the gpio direction to output
+myOnboardLed.dir(mraa.DIR_OUT);//set the gpio direction to output
+var photoDiode = new mraa.Aio(0);
+//photoDiode.dir(mraa.DIR_IN);
 var ledState = true; //Boolean to hold the state of Led
 
 var express = require('express');
@@ -82,6 +84,12 @@ io.on('connection', function(socket) {
         msg.value = ledState;
         io.emit('toogle led', msg);
         ledState = !ledState; //invert the ledState
+    });
+    
+    socket.on('diode read', function(msg) {
+        msg.value = photoDiode.readFloat() * 5.0;
+        console.log(msg.value);
+        io.emit('diode read', msg);
     });
     
 });

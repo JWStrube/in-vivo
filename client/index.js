@@ -12,6 +12,15 @@ $("#led-link").on('click', function(e){
     socket.emit('toogle led', {value: 0, userId: userId});
 });
 
+$("#diode-link").on('click', function(e){
+    socket.emit('diode read', {value: 0, userId: userId});
+});
+
+socket.on('diode read', function(msg){
+    //$("#diode-container span").text(msg.value);
+    $('#messages').prepend($('<li>Read Value: <span> - '+msg.value+'</span></li>'));
+});
+
 socket.on('toogle led', function(msg) {
     if(msg.value === false) {
         $('#messages').prepend($('<li>Toogle LED: OFF<span> - '+msg.userId+'</span></li>'));

@@ -5,5 +5,98 @@
     "projectFiles": {},
     "projectDirectories": {},
     "initialAutoPluginCount": 0
+  },
+  "iot-tab": {
+    "fileStatus": {
+      "icon.png": {
+        "previousModTime": 1445917718232,
+        "modified": 1445917718232,
+        "seen": true,
+        "name": "icon.png"
+      },
+      "LICENSE.md": {
+        "previousModTime": 1445917718215,
+        "modified": 1445917718215,
+        "seen": true,
+        "name": "LICENSE.md"
+      },
+      "main.js": {
+        "previousModTime": 1445930175971,
+        "modified": 1445930175971,
+        "seen": true,
+        "name": "main.js"
+      },
+      "package.json": {
+        "previousModTime": 1445917718242,
+        "modified": 1445917718242,
+        "seen": true,
+        "name": "package.json"
+      },
+      "README.md": {
+        "previousModTime": 1445917718219,
+        "modified": 1445917718219,
+        "seen": true,
+        "name": "README.md"
+      },
+      "webSocketsTemplate.xdk": {
+        "previousModTime": 1445917718245,
+        "modified": 1445917718245,
+        "seen": true,
+        "name": "webSocketsTemplate.xdk"
+      },
+      "webSocketsTemplate.xdke": {
+        "previousModTime": 1445930179813,
+        "modified": 1445930179813,
+        "seen": true,
+        "name": "webSocketsTemplate.xdke"
+      },
+      "webSocketsTemplate_1.2.0.xdke_bak": {
+        "previousModTime": 1445917718254,
+        "modified": 1445917718254,
+        "seen": true,
+        "name": "webSocketsTemplate_1.2.0.xdke_bak"
+      },
+      "webSocketsTemplate_1.2.0.xdk_bak": {
+        "previousModTime": 1445917718251,
+        "modified": 1445917718251,
+        "seen": true,
+        "name": "webSocketsTemplate_1.2.0.xdk_bak"
+      },
+      "websockets_client.png": {
+        "previousModTime": 1445917718258,
+        "modified": 1445917718258,
+        "seen": true,
+        "name": "websockets_client.png"
+      },
+      "client/index.css": {
+        "previousModTime": 1445925601688,
+        "modified": 1445925601688,
+        "seen": true,
+        "name": "client/index.css"
+      },
+      "client/index.html": {
+        "previousModTime": 1445924736552,
+        "modified": 1445924736552,
+        "seen": true,
+        "name": "client/index.html"
+      },
+      "client/index.js": {
+        "previousModTime": 1445930333131,
+        "modified": 1445930333131,
+        "seen": true,
+        "name": "client/index.js"
+      },
+      "xdk/project-info.json": {
+        "previousModTime": 1445917718263,
+        "modified": 1445917718263,
+        "seen": true,
+        "name": "xdk/project-info.json"
+      }
+    },
+    "boardFileStatus": {
+      "client/index.js": {
+        "previousModTime": 1445930337006
+      }
+    }
   }
 }
