@@ -25,8 +25,8 @@ var fs = require('fs');
 
 
 var analogPin0 = new mraa.Aio(0); //setup access analog input Analog pin #0 (A0)
-var digitalPin0 = new mraa.Gpio(5); //LED pin
-digitalPin0.dir(mraa.DIR_OUT);
+var ledPin = new mraa.Gpio(5); //LED pin
+ledPin.dir(mraa.DIR_OUT);
 
 var rawData = [];
 var realData = [];
@@ -75,12 +75,12 @@ function measureValue(tubeNumber) {
 
 function ledOnOff(boolOnOff) {
     
-        digitalPin0.write(boolOnOff);
+        ledPin.write(boolOnOff);
     
 }
     
 function saveToFile() {
-    var stream fs.createWriteStream(path);
+    var stream = fs.createWriteStream(path);
     rawData.forEach(function(value){
     	stream.write('[');
     	stream.write(new Date().toString());
