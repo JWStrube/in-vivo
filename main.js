@@ -35,6 +35,7 @@ var photoDiode = new mraa.Aio(0);
 //photoDiode.dir(mraa.DIR_IN);
 var ledState = true; //Boolean to hold the state of Led
 
+<<<<<<< HEAD
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -93,9 +94,18 @@ io.on('connection', function(socket) {
         console.log(msg.value);
         io.emit('diode read', msg);
     });
+=======
+
+
+>>>>>>> origin/master
     
 });
 
+<<<<<<< HEAD
 http.listen(3000, function(){
     console.log('Web server Active listening on *:3000');
 });
+=======
+    
+}
+>>>>>>> origin/master
