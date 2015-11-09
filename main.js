@@ -35,7 +35,6 @@ var photoDiode = new mraa.Aio(0);
 //photoDiode.dir(mraa.DIR_IN);
 var ledState = true; //Boolean to hold the state of Led
 
-<<<<<<< HEAD
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -56,56 +55,47 @@ app.use('/client', express.static(__dirname + '/client'));
 
 //Socket.io Event handlers
 io.on('connection', function(socket) {
-    console.log("\n Add new User: u"+connectedUsersArray.length);
-    if(connectedUsersArray.length > 0) {
-        var element = connectedUsersArray[connectedUsersArray.length-1];
-        userId = 'u' + (parseInt(element.replace("u", ""))+1);
+    console.log("\n Add new User: u" + connectedUsersArray.length);
+    if (connectedUsersArray.length > 0) {
+        var element = connectedUsersArray[connectedUsersArray.length - 1];
+        userId = 'u' + (parseInt(element.replace("u", "")) + 1);
     }
     else {
         userId = "u0";
     }
-    console.log('a user connected: '+userId);
+    console.log('a user connected: ' + userId);
     io.emit('user connect', userId);
     connectedUsersArray.push(userId);
     console.log('Number of Users Connected ' + connectedUsersArray.length);
     console.log('User(s) Connected: ' + connectedUsersArray);
     io.emit('connected users', connectedUsersArray);
-    
-    socket.on('user disconnect', function(msg) {
+
+    socket.on('user disconnect', function (msg) {
         console.log('remove: ' + msg);
         connectedUsersArray.splice(connectedUsersArray.lastIndexOf(msg), 1);
         io.emit('user disconnect', msg);
     });
-    
-    socket.on('chat message', function(msg) {
+
+    socket.on('chat message', function (msg) {
         io.emit('chat message', msg);
         console.log('message: ' + msg.value);
     });
-    
-    socket.on('toogle led', function(msg) {
-        myOnboardLed.write(ledState?1:0); //if ledState is true then write a '1' (high) otherwise write a '0' (low)
+
+    socket.on('toogle led', function (msg) {
+        myOnboardLed.write(ledState ? 1 : 0); //if ledState is true then write a '1' (high) otherwise write a '0' (low)
         msg.value = ledState;
         io.emit('toogle led', msg);
         ledState = !ledState; //invert the ledState
     });
-    
-    socket.on('diode read', function(msg) {
+
+    socket.on('diode read', function (msg) {
         msg.value = photoDiode.readFloat() * 100.0;
         console.log(msg.value);
         io.emit('diode read', msg);
     });
-=======
 
 
->>>>>>> origin/master
-    
-});
-
-<<<<<<< HEAD
-http.listen(3000, function(){
-    console.log('Web server Active listening on *:3000');
-});
-=======
-    
+    http.listen(3000, function () {
+        console.log('Web server Active listening on *:3000');
+    });
 }
->>>>>>> origin/master
