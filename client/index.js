@@ -12,7 +12,7 @@ $("#led-link").on('click', function(e){
     socket.emit('toogle led', {value: 0, userId: userId});
 });
 
-$("#calibrate").on('click', function(e){
+$("#calibrate-link").on('click', function(e){
     socket.emit('calibrate range', {value: 0, userId: userId});
 });
 //$("#diode-link").hide();
@@ -77,6 +77,10 @@ socket.on('sorry', function(msg){
     alert(msg);
     socket.emit("user disconnect", "notMaster");
     //socket.disconnect;
+});
+
+socket.on('led on error', function(msg){
+    alert(msg);
 });
 
 
