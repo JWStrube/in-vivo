@@ -106,8 +106,8 @@ app.use('/client', express.static(__dirname + '/client'));
 //Socket.io Event handlers
 io.on('connection', function(socket) {
     if (connectedUsersArray.length > 0) {
-        io.emit('sorry', "A User is Already Connected!! \n YOU WILL NOW BE DISCONNECTED");
-        io.emit('user disconnect', "No User");
+        io.emit('sorry', {value: "A User is Already Connected!! \n YOU WILL NOW BE DISCONNECTED"});
+        io.emit('user disconnect', {value: "No User"});
         //var element = connectedUsersArray[connectedUsersArray.length - 1];
         //userId = 'u' + (parseInt(element.replace("u", "")) + 1);
         return;
@@ -130,7 +130,7 @@ io.on('connection', function(socket) {
             io.emit('user disconnect', msg);
         }
         else{
-            socket.disconnect;
+            socket.emit('disconnect', msg);
         }
     });
     
@@ -162,45 +162,50 @@ io.on('connection', function(socket) {
     
     socket.on('calibrate range', function(msg){
         if(!ledState){
-            io.emit('led on error', "Error. You must calibrate when the LEDS are off!");
+            msg.value = "Error. You must calibrate when the LEDS are off!";
+            io.emit('led on error', msg);
         }
         else{
-            setMux0;
+            minArray.splice(0, 8); //clear min array
+            maxArray.splice(0, 8); //clear max array
+            msg.value  = "Requirement: Test tubes with pure water are in the device.\n If not, recalibrate when they are.";
+            setMux0();
             minArray.push(photoDiode.readFloat() * 100.0);
-            setMux1;
+            setMux1();
             minArray.push(photoDiode.readFloat() * 100.0);
-            setMux2;
+            setMux2();
             minArray.push(photoDiode.readFloat() * 100.0);
-            setMux3;
+            setMux3();
             minArray.push(photoDiode.readFloat() * 100.0);
-            setMux4;
+            setMux4();
             minArray.push(photoDiode.readFloat() * 100.0);
-            setMux5;
+            setMux5();
             minArray.push(photoDiode.readFloat() * 100.0);
-            setMux6;
+            setMux6();
             minArray.push(photoDiode.readFloat() * 100.0);
-            setMux7;
+            setMux7();
             minArray.push(photoDiode.readFloat() * 100.0);
             console.log("mins worked alright");
             myOnboardLed.write(1);
-            setMux0;
-            setTimeout(maxArray.push(photoDiode.readFloat() * 100.0), 1000);
-            setMux1;
+            setMux0();
             maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux2;
+            setMux1();
             maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux3;
+            setMux2();
             maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux4;
+            setMux3();
             maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux5;
+            setMux4();
             maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux6;
+            setMux5();
             maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux7;
+            setMux6();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux7();
             maxArray.push(photoDiode.readFloat() * 100.0);
             console.log("maxs worked alright");
             myOnboardLed.write(0);
+            io.emit('calibrate alert', msg);
         }
     });
 

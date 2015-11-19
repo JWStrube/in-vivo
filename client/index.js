@@ -68,30 +68,34 @@ socket.on('user disconnect', function(msg) {
     if(msg === "Master"){
         console.log("user disconnect: " + msg);
         var element = '#'+msg;
-        console.log(element)
+        console.log(element);
         $(element).remove();
     }
 });
 
 socket.on('sorry', function(msg){
-    alert(msg);
-    socket.emit("user disconnect", "notMaster");
+    alert(msg.value);
+    socket.emit("user disconnect", {value: "notMaster"});
     //socket.disconnect;
 });
 
 socket.on('led on error', function(msg){
-    alert(msg);
+    alert(msg.value);
+});
+
+socket.on('calibrate alert', function(msg){
+    alert(msg.value);
 });
 
 
 window.onunload = function(e) {
     socket.emit("user disconnect", userId);
-}
+};
 
 tab.onclose = function(e){
     socket.emit("user disconnect", userId);
-}
+};
 
 window.onclose = function(e) {
     socket.emit("user disconnect", userId);
-}
+};
