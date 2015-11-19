@@ -18,7 +18,8 @@ $("#calibrate-link").on('click', function(e){
 //$("#diode-link").hide();
 
 $("#diode-link").on('click', function(e){
-    socket.emit('diode read', {value: 0, userId: userId});
+    if($(this).hasClass('active'))
+        socket.emit('diode read', {value: 0, userId: userId});
 });
 
 socket.on('diode read', function(msg){
@@ -86,6 +87,7 @@ socket.on('led on error', function(msg){
 socket.on('calibrate alert', function(msg){
     if(confirm(msg.value)){
         socket.emit('calibrate confirm', msg);
+        $("#diode-link").addClass('active').on('click');
     }
 });
 

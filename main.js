@@ -161,11 +161,11 @@ io.on('connection', function(socket) {
     });
     
     socket.on('calibrate range', function(msg){
-        if(!ledState){
+        if(!ledState){ //if leds are on, alert user
             msg.value = "Error. You must calibrate when the LEDS are off!";
             io.emit('led on error', msg);
         }
-        else{
+        else{ //otherwise, send confirm dialog to user
             minArray.splice(0, 8); //clear min array
             maxArray.splice(0, 8); //clear max array
             msg.value  = "Click OK to continue when test tubes with pure water are in the device.\n Click CANCEL to cancel";
@@ -175,8 +175,8 @@ io.on('connection', function(socket) {
     });
     
     socket.on('calibrate confirm', function(msg){
-            getMins();
-            setTimeout(getMaxs, 1000);
+            getMins(); //get min diode readings
+            setTimeout(getMaxs, 1000); //wait 1 second for LEDs to warm up, then get max diode readings
     });
 
 });

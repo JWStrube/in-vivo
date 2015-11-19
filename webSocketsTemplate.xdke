@@ -21,8 +21,8 @@
         "name": "LICENSE.md"
       },
       "main.js": {
-        "previousModTime": 1447967950603,
-        "modified": 1447967950603,
+        "previousModTime": 1447969568058,
+        "modified": 1447969568058,
         "seen": true,
         "name": "main.js"
       },
@@ -45,8 +45,8 @@
         "name": "webSocketsTemplate.xdk"
       },
       "webSocketsTemplate.xdke": {
-        "previousModTime": 1447967956520,
-        "modified": 1447967956520,
+        "previousModTime": 1447969572558,
+        "modified": 1447969572558,
         "seen": true,
         "name": "webSocketsTemplate.xdke"
       },
@@ -69,20 +69,20 @@
         "name": "websockets_client.png"
       },
       "client/index.css": {
-        "previousModTime": 1447910227384,
-        "modified": 1447910227384,
+        "previousModTime": 1447969785515,
+        "modified": 1447969785515,
         "seen": true,
         "name": "client/index.css"
       },
       "client/index.html": {
-        "previousModTime": 1447967950603,
-        "modified": 1447967950603,
+        "previousModTime": 1447969568058,
+        "modified": 1447969568058,
         "seen": true,
         "name": "client/index.html"
       },
       "client/index.js": {
-        "previousModTime": 1447967950604,
-        "modified": 1447967950604,
+        "previousModTime": 1447969568058,
+        "modified": 1447969568058,
         "seen": true,
         "name": "client/index.js"
       },
@@ -159,6 +159,10 @@
         "name": "in-vivo.xdke"
       }
     },
-    "boardFileStatus": {}
+    "boardFileStatus": {
+      "client/index.css": {
+        "previousModTime": 1447969789779
+      }
+    }
   }
 }

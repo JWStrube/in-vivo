@@ -102,6 +102,17 @@ body {
 }
 
 #diode-link{
+    pointer-events: none;
+    margin: 1em 1em;
+    color: #808080;
+    font-weight: bold;
+    font-size: 1.3em;
+    border: 2px solid currentColor;
+    border-radius: 5px;
+}
+
+#diode-link.active{
+    pointer-events: auto;
     margin: 1em 1em;
     color: #3498db;
     font-weight: bold;
