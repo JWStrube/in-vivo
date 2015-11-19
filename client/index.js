@@ -84,7 +84,9 @@ socket.on('led on error', function(msg){
 });
 
 socket.on('calibrate alert', function(msg){
-    alert(msg.value);
+    if(confirm(msg.value)){
+        socket.emit('calibrate confirm', msg);
+    }
 });
 
 

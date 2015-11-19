@@ -168,48 +168,61 @@ io.on('connection', function(socket) {
         else{
             minArray.splice(0, 8); //clear min array
             maxArray.splice(0, 8); //clear max array
-            msg.value  = "Requirement: Test tubes with pure water are in the device.\n If not, recalibrate when they are.";
-            setMux0();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux1();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux2();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux3();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux4();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux5();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux6();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux7();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            console.log("mins worked alright");
-            myOnboardLed.write(1);
-            setMux0();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux1();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux2();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux3();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux4();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux5();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux6();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux7();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            console.log("maxs worked alright");
-            myOnboardLed.write(0);
+            msg.value  = "Click OK to continue when test tubes with pure water are in the device.\n Click CANCEL to cancel";
+            
             io.emit('calibrate alert', msg);
         }
+    });
+    
+    socket.on('calibrate confirm', function(msg){
+            getMins();
+            setTimeout(getMaxs, 1000);
     });
 
 });
 http.listen(3000, function () {
      console.log('Web server Active listening on *:3000');
 });
+
+function getMins(){ //reads diode min values into minArray and sets leds on after
+            setMux0();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux1();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux2();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux3();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux4();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux5();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux6();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux7();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            console.log("min reads done");
+            myOnboardLed.write(1);
+            console.log("leds on");
+}
+function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
+            setMux0();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux1();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux2();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux3();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux4();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux5();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux6();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux7();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            console.log("max reads done");
+            myOnboardLed.write(0);
+            console.log("leds off");
+}
