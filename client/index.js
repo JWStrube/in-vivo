@@ -2,15 +2,20 @@ var socket = io();
 var userId = "user";
 
 
-$('form').submit(function() {
-    socket.emit('chat message', {value: $('#m').val(), userId: userId});
-    $('#m').val('');
-    return false;
-});
+//$('form').submit(function() {
+//    socket.emit('chat message', {value: $('#m').val(), userId: userId});
+//   $('#m').val('');
+//    return false;
+//});
 
 $("#led-link").on('click', function(e){
     socket.emit('toogle led', {value: 0, userId: userId});
 });
+
+$("#calibrate").on('click', function(e){
+    socket.emit('calibrate range', {value: 0, userId: userId});
+});
+$("#diode-link").hide();
 
 $("#diode-link").on('click', function(e){
     socket.emit('diode read', {value: 0, userId: userId});
@@ -19,6 +24,11 @@ $("#diode-link").on('click', function(e){
 socket.on('diode read', function(msg){
     $("#diode-container").text(msg.value.toString());
     $('#messages').prepend($('<li>Read Value: <span> - '+msg.value+'</span></li>'));
+});
+
+socket.on('sorry', function(msg){
+    alert(msg);
+    socket.disconnect;
 });
 
 socket.on('toogle led', function(msg) {
@@ -36,9 +46,9 @@ socket.on('toogle led', function(msg) {
     }
 });
 
-socket.on('chat message', function(msg) {
-    $('#messages').prepend($('<li>'+msg.value+'<span> - '+msg.userId+'</span></li>'));
-});
+//socket.on('chat message', function(msg) {
+//    $('#messages').prepend($('<li>'+msg.value+'<span> - '+msg.userId+'</span></li>'));
+//});
 
 socket.on('connected users', function(msg) {
     $('#user-container').html("");
@@ -52,7 +62,7 @@ socket.on('connected users', function(msg) {
 });
 
 socket.on('user connect', function(msg) {
-    if(userId === "user"){
+    if(userId === "Welcome"){
         console.log("Client side userId: "+msg);
         userId = msg;
     }

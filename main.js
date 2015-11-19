@@ -32,7 +32,7 @@ console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to t
 var myOnboardLed = new mraa.Gpio(7); //LED hooked up to digital pin 13 (or built in pin on Intel Galileo Gen2 as well as Intel Edison)
 myOnboardLed.dir(mraa.DIR_OUT);//set the gpio direction to output
 var photoDiode = new mraa.Aio(0);
-//photoDiode.dir(mraa.DIR_IN);
+photoDiode.setBit(12); // set ADC to 12 bit mode
 var ledState = true; //Boolean to hold the state of Led
 
 var express = require('express');
@@ -57,17 +57,19 @@ app.use('/client', express.static(__dirname + '/client'));
 io.on('connection', function(socket) {
     console.log("\n Add new User: u" + connectedUsersArray.length);
     if (connectedUsersArray.length > 0) {
-        var element = connectedUsersArray[connectedUsersArray.length - 1];
-        userId = 'u' + (parseInt(element.replace("u", "")) + 1);
+        io.emit('sorry', "A User is Already Connected!!");
+        //var element = connectedUsersArray[connectedUsersArray.length - 1];
+        //userId = 'u' + (parseInt(element.replace("u", "")) + 1);
+        return;
     }
     else {
-        userId = "u0";
+        userId = "Welcome, Master";
     }
     console.log('a user connected: ' + userId);
     io.emit('user connect', userId);
     connectedUsersArray.push(userId);
-    console.log('Number of Users Connected ' + connectedUsersArray.length);
-    console.log('User(s) Connected: ' + connectedUsersArray);
+    console.log('You are number: ' + connectedUsersArray.length);
+    console.log('User has Connected: ' + connectedUsersArray);
     io.emit('connected users', connectedUsersArray);
 
     socket.on('user disconnect', function (msg) {
@@ -76,10 +78,10 @@ io.on('connection', function(socket) {
         io.emit('user disconnect', msg);
     });
 
-    socket.on('chat message', function (msg) {
-        io.emit('chat message', msg);
-        console.log('message: ' + msg.value);
-    });
+    //socket.on('chat message', function (msg) {
+    //    io.emit('chat message', msg);
+    //    console.log('message: ' + msg.value);
+    //});
 
     socket.on('toogle led', function (msg) {
         myOnboardLed.write(ledState ? 1 : 0); //if ledState is true then write a '1' (high) otherwise write a '0' (low)
@@ -92,6 +94,10 @@ io.on('connection', function(socket) {
         msg.value = photoDiode.readFloat() * 100.0;
         console.log(msg.value);
         io.emit('diode read', msg);
+    });
+    
+    socket.on('calibrate range', function(msg){
+        
     });
 
 

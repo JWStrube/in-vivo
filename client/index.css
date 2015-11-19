@@ -110,12 +110,25 @@ body {
     border-radius: 5px;
 }
 
+#calibrate-link{
+    margin: 1em 1em;
+    color: #3498db;
+    font-weight: bold;
+    font-size: 1.3em;
+    border: 2px solid currentColor;
+    border-radius: 5px;
+}
+
 
 #led-link-container {
     margin-top: 1em;
 }
 
 #diode-link-container{
+    margin-top: 1em;
+}
+
+#calibrate-link-container{
     margin-top: 1em;
 }
 
