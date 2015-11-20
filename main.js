@@ -40,9 +40,34 @@ var app = express();
 var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var GoogleSpreadsheet = require("google-spreadsheet");
+
+var my_sheet = new GoogleSpreadsheet('<1zNhnZOcdRuBETDI42NIp-M942_0rpXhX9trNpIWTiWA>');
 
 var connectedUsersArray = [];
 var userId;
+
+my_sheet.getRows( 1, function(err, row_data){
+    console.log( 'pulled in '+row_data.length + ' rows');
+});
+
+
+var creds = require('./My Project-c91ed1eef404.json');
+
+my_sheet.useServiceAccountAuth(creds, function(err){
+    // getInfo returns info about the sheet and an array or "worksheet" objects 
+    my_sheet.getInfo( function( err, sheet_info ){
+        console.log( sheet_info.title + ' is loaded' );
+        // use worksheet object if you want to stop using the # in your calls 
+ 
+        var sheet1 = sheet_info.worksheets[0];
+        sheet1.getRows( function( err, rows ){
+            rows[0].colname = 'new val';
+            rows[0].save(); //async and takes a callback 
+            rows[0].del();  //async and takes a callback 
+        });
+    });
+
 
 app.get('/', function(req, res) {
     //Join all arguments together and normalize the resulting path.
