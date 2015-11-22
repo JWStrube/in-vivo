@@ -40,6 +40,21 @@ var muxB = new mraa.Gpio(6); // pin B of mux select pins
 muxB.dir(mraa.DIR_OUT);
 var muxC = new mraa.Gpio(7); // pin C of mux select pins
 muxC.dir(mraa.DIR_OUT);
+
+//Use this instead
+function setMux(input) {
+	var binary = [];
+	var num = input;
+	while(input>=1) {
+		binary.unshift(num%2);
+		num = Math.floor(number/2);
+		muxA.write(binary[1]);
+		muxB.write(binary[2]);
+		muxC.write(binary[3]);
+	}
+	
+}
+/*
 function setMux0(){ //set mux input to channel 0
     muxC.write(0);
     muxB.write(0);
@@ -80,7 +95,7 @@ function setMux7(){ //set mux input to channel 7
     muxB.write(1);
     muxA.write(1);
 }
-
+*/
 var ledState = true; //Boolean to hold the state of Led
 
 var express = require('express');
@@ -185,6 +200,13 @@ http.listen(3000, function () {
 });
 
 function getMins(){ //reads diode min values into minArray and sets leds on after
+
+
+			for(i = 0; i < 8; i++) {
+				setMux(i);
+				minArray.push(photoDiode.readFloat() * 100.0);
+			}
+			/*
             setMux0();
             minArray.push(photoDiode.readFloat() * 100.0);
             setMux1();
@@ -201,11 +223,18 @@ function getMins(){ //reads diode min values into minArray and sets leds on afte
             minArray.push(photoDiode.readFloat() * 100.0);
             setMux7();
             minArray.push(photoDiode.readFloat() * 100.0);
+			*/
             console.log("min reads done");
             myOnboardLed.write(1);
             console.log("leds on");
 }
 function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
+
+			for(i = 0; i < 8; i++) {
+				setMux(i);
+				maxArray.push(photoDiode.readFloat() * 100.0);
+			}
+			/*
             setMux0();
             maxArray.push(photoDiode.readFloat() * 100.0);
             setMux1();
@@ -222,6 +251,7 @@ function getMaxs(){ //reads max values into maxArray from diodes and sets leds t
             maxArray.push(photoDiode.readFloat() * 100.0);
             setMux7();
             maxArray.push(photoDiode.readFloat() * 100.0);
+			*/
             console.log("max reads done");
             myOnboardLed.write(0);
             console.log("leds off");
