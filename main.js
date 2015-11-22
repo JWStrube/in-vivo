@@ -42,6 +42,7 @@ var muxC = new mraa.Gpio(7); // pin C of mux select pins
 muxC.dir(mraa.DIR_OUT);
 
 //Use this instead
+/*
 function setMux(input) {
 	var binary = [];
 	var num = input;
@@ -54,7 +55,7 @@ function setMux(input) {
 	}
 	
 }
-/*
+*/
 function setMux0(){ //set mux input to channel 0
     muxC.write(0);
     muxB.write(0);
@@ -95,7 +96,7 @@ function setMux7(){ //set mux input to channel 7
     muxB.write(1);
     muxA.write(1);
 }
-*/
+
 var ledState = true; //Boolean to hold the state of Led
 
 var express = require('express');
@@ -136,7 +137,6 @@ io.on('connection', function(socket) {
     connectedUsersArray.push(userId);
     console.log('You are number: ' + connectedUsersArray.length);
     console.log('User has Connected: ' + connectedUsersArray);
-    io.emit('connected users', connectedUsersArray);
 
     socket.on('user disconnect', function (msg) {
         if(msg === "Master"){
@@ -181,8 +181,8 @@ io.on('connection', function(socket) {
             io.emit('led on error', msg);
         }
         else{ //otherwise, send confirm dialog to user
-            minArray.splice(0, 8); //clear min array
-            maxArray.splice(0, 8); //clear max array
+            minArray.splice(0, minArray.length); //clear min array
+            maxArray.splice(0, minArray.length); //clear max array
             msg.value  = "Click OK to continue when test tubes with pure water are in the device.\n Click CANCEL to cancel";
             
             io.emit('calibrate alert', msg);
@@ -202,12 +202,12 @@ http.listen(3000, function () {
 function getMins(){ //reads diode min values into minArray and sets leds on after
 
 
-			minArray = [];
+			/*minArray = [];
 			for(i = 0; i < 8; i++) {
 				setMux(i);
 				minArray.push(photoDiode.readFloat() * 100.0);
 			}
-			/*
+			*/
             setMux0();
             minArray.push(photoDiode.readFloat() * 100.0);
             setMux1();
@@ -224,19 +224,18 @@ function getMins(){ //reads diode min values into minArray and sets leds on afte
             minArray.push(photoDiode.readFloat() * 100.0);
             setMux7();
             minArray.push(photoDiode.readFloat() * 100.0);
-			*/
             console.log("min reads done");
             myOnboardLed.write(1);
             console.log("leds on");
 }
 function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
 
-			maxArray = [];
+			/*maxArray = [];
 			for(i = 0; i < 8; i++) {
 				setMux(i);
 				maxArray.push(photoDiode.readFloat() * 100.0);
 			}
-			/*
+			*/
             setMux0();
             maxArray.push(photoDiode.readFloat() * 100.0);
             setMux1();
@@ -253,7 +252,6 @@ function getMaxs(){ //reads max values into maxArray from diodes and sets leds t
             maxArray.push(photoDiode.readFloat() * 100.0);
             setMux7();
             maxArray.push(photoDiode.readFloat() * 100.0);
-			*/
             console.log("max reads done");
             myOnboardLed.write(0);
             console.log("leds off");

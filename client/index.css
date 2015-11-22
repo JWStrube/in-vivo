@@ -4,14 +4,16 @@
     box-sizing: border-box
 }
 
-body {
-    font:13px Helvetica, Arial;
-    padding-bottom: 138px;
+html {
     background-image: url(background-spring.PNG);
     background-repeat: no-repeat;
-    background-position-x: -360px;
-    background-position-y: bottom;
     background-size: cover;
+    background-position-x: -360px;
+    min-height: 100%;
+}
+
+body {
+    font:13px Helvetica, Arial;
 }
 
 .title {
@@ -36,6 +38,11 @@ body {
     font-size: 2em;
 }
 
+.sub-title-right {
+    font-size: 2em;
+    padding-left: 2cm;
+}
+
 .user-circle, .my-circle {
     width: 5em;
     height: 5em;
@@ -52,6 +59,7 @@ body {
 
 .my-circle {
     background-color: rgb(17,94,162);
+    float: left;
 }
 
 .user-circle span, .my-circle span, #led-container span {
@@ -129,7 +137,7 @@ body {
 
 #calibrate-link{
     margin: 1em 1em;
-    color: #3498db;
+    color: rgb(17,94,162);
     font-weight: bold;
     font-size: 1.3em;
     border: 2px solid currentColor;
@@ -146,7 +154,8 @@ body {
 }
 
 #calibrate-link-container{
-    margin-top: 1em;
+    margin-top: 2em;
+    padding-left: 5.5cm;
 }
 
 
