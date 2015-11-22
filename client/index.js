@@ -88,6 +88,7 @@ socket.on('calibrate alert', function(msg){
     if(confirm(msg.value)){
         socket.emit('calibrate confirm', msg);
         $("#diode-link").addClass('active').on('click');
+        $("#diode-container").text("OK to click now");
     }
 });
 

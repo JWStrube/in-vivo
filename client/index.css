@@ -6,6 +6,12 @@
 
 body {
     font:13px Helvetica, Arial;
+    padding-bottom: 138px;
+    background-image: url(background-spring.PNG);
+    background-repeat: no-repeat;
+    background-position-x: -360px;
+    background-position-y: bottom;
+    background-size: cover;
 }
 
 .title {
