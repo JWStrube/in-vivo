@@ -202,6 +202,7 @@ http.listen(3000, function () {
 function getMins(){ //reads diode min values into minArray and sets leds on after
 
 
+			minArray = [];
 			for(i = 0; i < 8; i++) {
 				setMux(i);
 				minArray.push(photoDiode.readFloat() * 100.0);
@@ -230,6 +231,7 @@ function getMins(){ //reads diode min values into minArray and sets leds on afte
 }
 function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
 
+			maxArray = [];
 			for(i = 0; i < 8; i++) {
 				setMux(i);
 				maxArray.push(photoDiode.readFloat() * 100.0);
