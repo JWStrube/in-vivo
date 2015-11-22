@@ -48,9 +48,9 @@ function setMux(input) {
 	while(num>=1) {
 		binary.unshift(num%2);
 		num = Math.floor(number/2);
-		muxA.write(binary[1]);
-		muxB.write(binary[2]);
-		muxC.write(binary[3]);
+		muxA.write(binary[0]);
+		muxB.write(binary[1]);
+		muxC.write(binary[2]);
 	}
 	
 }
