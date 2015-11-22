@@ -5,5 +5,44 @@
     "currentBuildConfiguration": null,
     "projectFiles": {},
     "projectDirectories": {}
+  },
+  "iot-tab": {
+    "fileStatus": {
+      "in-vivo.xdk": {
+        "previousModTime": 1445470334103,
+        "modified": 1445470334103,
+        "seen": true,
+        "name": "in-vivo.xdk"
+      },
+      "in-vivo.xdke": {
+        "previousModTime": 1445969736708,
+        "modified": 1445969736708,
+        "seen": true,
+        "name": "in-vivo.xdke"
+      },
+      "main.js": {
+        "previousModTime": 1445969839040,
+        "modified": 1445969839040,
+        "seen": true,
+        "name": "main.js"
+      },
+      "package.json": {
+        "previousModTime": 1445470333843,
+        "modified": 1445470333843,
+        "seen": true,
+        "name": "package.json"
+      },
+      "xdk/project-info.json": {
+        "previousModTime": 1445470334067,
+        "modified": 1445470334067,
+        "seen": true,
+        "name": "xdk/project-info.json"
+      }
+    },
+    "boardFileStatus": {
+      "main.js": {
+        "previousModTime": 1445969889489
+      }
+    }
   }
 }
