@@ -45,7 +45,7 @@ muxC.dir(mraa.DIR_OUT);
 function setMux(input) {
 	var binary = [];
 	var num = input;
-	while(input>=1) {
+	while(num>=1) {
 		binary.unshift(num%2);
 		num = Math.floor(number/2);
 		muxA.write(binary[1]);
