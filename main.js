@@ -48,7 +48,7 @@ function setMux(input) {
 	var num = input;
 	while(num>=1) {
 		binary.unshift(num%2);
-		num = Math.floor(number/2);
+		num = Math.floor(num/2);
 		muxA.write(binary[0]);
 		muxB.write(binary[1]);
 		muxC.write(binary[2]);
@@ -104,15 +104,15 @@ var app = express();
 var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var GoogleSpreadsheet = require("google-spreadsheet");
+//var GoogleSpreadsheet = require("google-spreadsheet");
 
-var my_sheet = new GoogleSpreadsheet('<1zNhnZOcdRuBETDI42NIp-M942_0rpXhX9trNpIWTiWA>');
+//var my_sheet = new GoogleSpreadsheet('<1zNhnZOcdRuBETDI42NIp-M942_0rpXhX9trNpIWTiWA>');
 
 var connectedUsersArray = [];
 var maxArray = []; //array to hold max values of photodiode readings
 var minArray = []; //array to hold min values of photodiode readings
 var userId;
-
+/*
 my_sheet.getRows( 1, function(err, row_data){
     console.log( 'pulled in '+row_data.length + ' rows');
 });
@@ -133,6 +133,8 @@ my_sheet.useServiceAccountAuth(creds, function(err){
             rows[0].del();  //async and takes a callback 
         });
     });
+})
+*/
 
 
 app.get('/', function(req, res) {
