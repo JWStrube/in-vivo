@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, length=device-length">
     <title>Litmus Edison</title>
     <link rel="stylesheet" href="client/index.css"/>
     <!--    -->
@@ -12,24 +12,27 @@
 <body>
     <div class="title">Litmus Edison</div>
     <div class="container">
-        <span class="sub-title">Connected User(s)</span>
-        <div id="user-container">
-            <div id="u1" class="user-circle"></div>
+        <span class="sub-title">Connected</span>
+        <span class="sub-title-right">Calibration</span>
+        <div id="user-container" style="overflow: hidden">
+            <!--div id="u1" class="user-circle"></div-->
+            <div id='Master' class='my-circle'><span>Master</span></div>
+            <div id="calibrate-link-container"><a id="calibrate-link">Calibrate</a></div>            
         </div>
     </div>
     <div class="container">
-        <span class="sub-title">OnBoard LED status</span>
+        <span class="sub-title">LED status</span>
         <div id="led-container" class="off"><span>OFF</span></div>
         <div id="led-link-container"><a id="led-link">Toggle LED</a></div>
     </div>
     <div class="container">
-        <span class="sub-title">Read in Value (0.00-100.00)</span>
-        <div id="diode-link-container"><a id="diode-link">Read Value</a><span id="diode-container">No Values Yet</span></div>
+        <span class="sub-title">Read Diodes</span>
+        <div id="diode-link-container"><a id="diode-link">Read Value</a><span id="diode-container">Calibrate First!</span></div>
     </div>
-    <div class="container">
+    <!--div class="container">
         <span class="sub-title">Calibration</span>
         <div id="calibrate-link-container"><a id="calibrate-link">Calibrate</a></div>
-    </div>
+    </div-->
 
     <!--span class="log-title">Log</span>
     <div class="log-container">    

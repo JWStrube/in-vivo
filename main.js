@@ -28,11 +28,75 @@ Review README.md file for in-depth information about web sockets communication
 
 var mraa = require('mraa'); //require mraa
 console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the Intel XDK console
-//var myOnboardLed = new mraa.Gpio(3, false, true); //LED hooked up to digital pin (or built in pin on Galileo Gen1)
-var myOnboardLed = new mraa.Gpio(7); //LED hooked up to digital pin 13 (or built in pin on Intel Galileo Gen2 as well as Intel Edison)
+var myOnboardLed = new mraa.Gpio(8); //LED hooked up to digital pin 8
 myOnboardLed.dir(mraa.DIR_OUT);//set the gpio direction to output
 var photoDiode = new mraa.Aio(0);
 photoDiode.setBit(12); // set ADC to 12 bit mode
+
+//mux setup
+var muxA = new mraa.Gpio(5); // pin A of mux select pins
+muxA.dir(mraa.DIR_OUT);
+var muxB = new mraa.Gpio(6); // pin B of mux select pins
+muxB.dir(mraa.DIR_OUT);
+var muxC = new mraa.Gpio(7); // pin C of mux select pins
+muxC.dir(mraa.DIR_OUT);
+
+//Use this instead
+/*
+function setMux(input) {
+	var binary = [];
+	var num = input;
+	while(num>=1) {
+		binary.unshift(num%2);
+		num = Math.floor(number/2);
+		muxA.write(binary[0]);
+		muxB.write(binary[1]);
+		muxC.write(binary[2]);
+	}
+	
+}
+*/
+function setMux0(){ //set mux input to channel 0
+    muxC.write(0);
+    muxB.write(0);
+    muxA.write(0);
+}
+function setMux1(){ //set mux input to channel 1
+    muxC.write(0);
+    muxB.write(0);
+    muxA.write(1);
+}
+function setMux2(){ //set mux input to channel 2
+    muxC.write(0);
+    muxB.write(1);
+    muxA.write(0);
+}
+function setMux3(){ //set mux input to channel 3
+    muxC.write(0);
+    muxB.write(1);
+    muxA.write(1);
+}
+function setMux4(){ //set mux input to channel 4
+    muxC.write(1);
+    muxB.write(0);
+    muxA.write(0);
+}
+function setMux5(){ //set mux input to channel 5
+    muxC.write(1);
+    muxB.write(0);
+    muxA.write(1);
+}
+function setMux6(){ //set mux input to channel 6
+    muxC.write(1);
+    muxB.write(1);
+    muxA.write(0);
+}
+function setMux7(){ //set mux input to channel 7
+    muxC.write(1);
+    muxB.write(1);
+    muxA.write(1);
+}
+
 var ledState = true; //Boolean to hold the state of Led
 
 var express = require('express');
@@ -45,6 +109,8 @@ var GoogleSpreadsheet = require("google-spreadsheet");
 var my_sheet = new GoogleSpreadsheet('<1zNhnZOcdRuBETDI42NIp-M942_0rpXhX9trNpIWTiWA>');
 
 var connectedUsersArray = [];
+var maxArray = []; //array to hold max values of photodiode readings
+var minArray = []; //array to hold min values of photodiode readings
 var userId;
 
 my_sheet.getRows( 1, function(err, row_data){
@@ -81,8 +147,8 @@ app.use('/client', express.static(__dirname + '/client'));
 //Socket.io Event handlers
 io.on('connection', function(socket) {
     if (connectedUsersArray.length > 0) {
-        io.emit('sorry', "A User is Already Connected!! \n YOU WILL NOW BE DISCONNECTED");
-        io.emit('user disconnect', "No User");
+        io.emit('sorry', {value: "A User is Already Connected!! \n YOU WILL NOW BE DISCONNECTED"});
+        io.emit('user disconnect', {value: "No User"});
         //var element = connectedUsersArray[connectedUsersArray.length - 1];
         //userId = 'u' + (parseInt(element.replace("u", "")) + 1);
         return;
@@ -96,7 +162,6 @@ io.on('connection', function(socket) {
     connectedUsersArray.push(userId);
     console.log('You are number: ' + connectedUsersArray.length);
     console.log('User has Connected: ' + connectedUsersArray);
-    io.emit('connected users', connectedUsersArray);
 
     socket.on('user disconnect', function (msg) {
         if(msg === "Master"){
@@ -105,7 +170,7 @@ io.on('connection', function(socket) {
             io.emit('user disconnect', msg);
         }
         else{
-            socket.disconnect;
+            socket.emit('disconnect', msg);
         }
     });
     
@@ -130,16 +195,89 @@ io.on('connection', function(socket) {
     });
 
     socket.on('diode read', function (msg) {
-        msg.value = photoDiode.readFloat();
+        msg.value = (photoDiode.readFloat() * 100.0);
         console.log(msg.value);
         io.emit('diode read', msg);
     });
     
     socket.on('calibrate range', function(msg){
-        //nothing yet
+        if(!ledState){ //if leds are on, alert user
+            msg.value = "Error. You must calibrate when the LEDS are off!";
+            io.emit('led on error', msg);
+        }
+        else{ //otherwise, send confirm dialog to user
+            minArray.splice(0, minArray.length); //clear min array
+            maxArray.splice(0, minArray.length); //clear max array
+            msg.value  = "Click OK to continue when test tubes with pure water are in the device.\n Click CANCEL to cancel";
+            
+            io.emit('calibrate alert', msg);
+        }
+    });
+    
+    socket.on('calibrate confirm', function(msg){
+            getMins(); //get min diode readings
+            setTimeout(getMaxs, 1000); //wait 1 second for LEDs to warm up, then get max diode readings
     });
 
 });
-    http.listen(3000, function () {
-        console.log('Web server Active listening on *:3000');
-    });
+http.listen(3000, function () {
+     console.log('Web server Active listening on *:3000');
+});
+
+function getMins(){ //reads diode min values into minArray and sets leds on after
+
+
+			/*minArray = [];
+			for(i = 0; i < 8; i++) {
+				setMux(i);
+				minArray.push(photoDiode.readFloat() * 100.0);
+			}
+			*/
+            setMux0();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux1();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux2();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux3();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux4();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux5();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux6();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            setMux7();
+            minArray.push(photoDiode.readFloat() * 100.0);
+            console.log("min reads done");
+            myOnboardLed.write(1);
+            console.log("leds on");
+}
+function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
+
+			/*maxArray = [];
+			for(i = 0; i < 8; i++) {
+				setMux(i);
+				maxArray.push(photoDiode.readFloat() * 100.0);
+			}
+			*/
+            setMux0();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux1();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux2();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux3();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux4();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux5();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux6();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            setMux7();
+            maxArray.push(photoDiode.readFloat() * 100.0);
+            console.log("max reads done");
+            myOnboardLed.write(0);
+            console.log("leds off");
+}
