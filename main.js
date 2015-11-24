@@ -53,6 +53,14 @@ var connectedUsersArray = [];
 var maxArray = []; //array to hold max values of photodiode readings
 var minArray = []; //array to hold min values of photodiode readings
 var userId;
+var timeStamp; //Timestamp to print to spreadsheet or database
+var measurementInterval = 1; //In minutes, time between measurements in a single trial
+var timeToStartTrial; //Time to start the measurements
+var numOfMeasurements = 10; //Number of measurements to run in a single trial
+var measurementsRun = 0; //Number of measurements run so far
+var trialNumber; //Next trial being run
+var connectedToGoogle = false;
+
 
 //Initialization
 var ledState = true; //Boolean to hold the state of Led
@@ -69,7 +77,7 @@ Spreadsheet.load({
     }, function run(err, spreadsheet) {
         if(err) throw err;
  
-   //Do stuff
+        connectedToGoogle = true;
     });
 
 //Socket.io listeners
@@ -153,6 +161,7 @@ io.on('connection', function(socket) {
     });
     
     socket.on('calibrate confirm', function(msg){
+
             getMins(); //get min diode readings
             setTimeout(getMaxs, 1000); //wait 1 second for LEDs to warm up, then get max diode readings
     });
@@ -165,6 +174,9 @@ http.listen(3000, function () {
 
 
 //Functions
+function startTrial() { //Starts the next trial immediately
+
+}
 function getMins(){ //reads diode min values into minArray and sets leds on after
 
 
