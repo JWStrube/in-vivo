@@ -57,6 +57,21 @@ var userId;
 //Initialization
 var ledState = true; //Boolean to hold the state of Led
 
+//Initialize google spreadsheet
+Spreadsheet.load({
+    debug: true,
+    spreadsheetId: '1zNhnZOcdRuBETDI42NIp-M942_0rpXhX9trNpIWTiWA',
+    worksheetId: 'od6',   
+    oauth : {
+      email: 'account-1@metal-being-113418.iam.gserviceaccount.com',
+      key:  "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCi/DezSXfk+XCy\nHiOqGe3SCBTysEgkbhrDI2QmJYqUQKYO+kqukE9WAqyUsYk3an2/N/XAzlOkdGd7\nPidnj045MJLPlGxZtGzui0stPzkbZ4s+Xhvjk0msADX6TCDH7tBcCdyMOrSdbtAG\necI0/jUnTh+2l8sXQ1VU44+Gjivv2J/qYx3D5FH7yXk6kjAHacNrXQtmjX2n7+nE\n4ycNQxd9tJM9Pn4JSLMQdROUeAYAyQ8asdINn+bThIjBVM8u+vAwePlAypBj/4oz\norF9Oem8PQIfW1A/PqItjDdJfljHgMV3cQgdwIDauKGU+U4Sju+fIuLXLuFYRHMX\nRfzeG4YTAgMBAAECggEAB3z1Biyy8HcxYU2XL+J/Fa4/YCMPPXU9j4eZu1LwOf16\nY6fGNJz2uCnpSe+aMUyYOGfWx6PzHdQnSPdDEjP4URJVPGpCTCDI/HCz5IFKG2M3\nd4cVWvBSay+bS0OiIe1r7z6YvmyYDb+gmRuQ+6RORt8E//ubXhc+3WaTGoh/pkZH\nzhKf0C/+L32Mt8X6CPVHLO2oolPcYHdDEb1wUFqhPoOuzobzx42SjQuUywSffzkp\n2XB6rl+3kWU31cg4BhFN+FcDmJHSmwjM1Y8npRRJEtRjYzu7T76Lwd6v9AsOxz0Q\n01fx9D3LOzqzbbFVzcDcXEYnSXOm4oX/9M7Q7aUHWQKBgQDYAtBzyHF7GDjXponV\ngbssPCWLGijDKt8H1QUVnTFQaYRWI5sUZKNUlQeftXWokQhgGuORDCdoZfXweo1N\nqGjjveyzUo3cXU5FBJLjdXexL3leVbuYzYza+JrT6EdlWnpNIb8uI176CHcf6ToD\nPQk22i+R+p2JqSzSOU2IctQTfQKBgQDBKGhq/0qB6UivaMhZQJ4rh5F9v7nGcuTh\ngv8jDgtZpND8uJBtQZDeuimIvEj5YRKjYpKkv6FPJXoVxLETp0ahmwUCX7SRmsP8\ndbcx6SgmFyPdoms2QX/T7LjHY1bZYlNovbIUzBDNDBOJ+DOlCNGi6EaW3jA4IEQN\ny8uV9qIUzwKBgBiJ8U5F5gZa0RJGfAACNdYnmwg7V4gcVavZGjPDYLfG1N7IOrTN\nXfSc3XnaLlyQ5Uetpk5y+AMXGiJQeb7ps8izabFRXoY7H0od4+XtEUTSpNH/oUkR\niL/TYBtUls+/wIcEn2hJYl+7GHVKlGmLxIEzthW6R608x7e2BMXMbaUtAoGBAKWa\ne0ug7MRMueCJuZur5u/zHy3svt4Bi3I82Xm4hMqqn/LMWicR257ZhNqScw47x7sE\nvC07jpVI0E7xf9AVzlynh7ftTea4BefhFNtZxu5BUKKoqbqulWWgwxtPdBqUTmay\nnIdwHcdu3yGfBsgrs3A0LLEUdcro/u/FFhrQhU3JAoGAFdvc5C7L868TJD5FX0Wv\nx7EHU9yTL2C5hhZmKS5lZt1h8QLNkorM7l/34SpCNFuMciVd3YIK4DV5+GoHW9sJ\nIBZNjXmUHXNdRB8nBPMj16yNgc3kE/o4WdtMdYwEB4Bn/DN5IFtphjyR2kZSY+mv\ngq9yApMS3E6lNiYHCxH8bl8=\n-----END PRIVATE KEY-----\n"
+         }
+    }, function run(err, spreadsheet) {
+        if(err) throw err;
+ 
+   //Do stuff
+    });
+
 //Socket.io listeners
 app.get('/', function(req, res) {
     //Join all arguments together and normalize the resulting path.
