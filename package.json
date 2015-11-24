@@ -1,5 +1,5 @@
 {
-  "name": "websockets",
+  "name": "In-Vivo",
   "description": "",
   "version": "0.0.0",
   "main": "main.js",
@@ -8,6 +8,7 @@
   },
   "dependencies": {
       "express": "latest",
-      "socket.io":"latest"
+      "socket.io":"latest",
+      "edit-google-spreadsheet": "latest"
   }
 }

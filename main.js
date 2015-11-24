@@ -26,8 +26,15 @@ Review README.md file for in-depth information about web sockets communication
 
 //var async = require('async');
 
+var Spreadsheet = require('edit-google-spreadsheet');
 var mraa = require('mraa'); //require mraa
-console.log('MRAA Version: ' + mraa.getVersion()); //write the mraa version to the Intel XDK console
+var express = require('express');
+var app = express();
+var path = require('path');
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+//Pin setups
 var myOnboardLed = new mraa.Gpio(8); //LED hooked up to digital pin 8
 myOnboardLed.dir(mraa.DIR_OUT);//set the gpio direction to output
 var photoDiode = new mraa.Aio(0);
@@ -41,102 +48,16 @@ muxB.dir(mraa.DIR_OUT);
 var muxC = new mraa.Gpio(7); // pin C of mux select pins
 muxC.dir(mraa.DIR_OUT);
 
-//Use this instead
-/*
-function setMux(input) {
-	var binary = [];
-	var num = input;
-	while(num>=1) {
-		binary.unshift(num%2);
-		num = Math.floor(num/2);
-		muxA.write(binary[0]);
-		muxB.write(binary[1]);
-		muxC.write(binary[2]);
-	}
-	
-}
-*/
-function setMux0(){ //set mux input to channel 0
-    muxC.write(0);
-    muxB.write(0);
-    muxA.write(0);
-}
-function setMux1(){ //set mux input to channel 1
-    muxC.write(0);
-    muxB.write(0);
-    muxA.write(1);
-}
-function setMux2(){ //set mux input to channel 2
-    muxC.write(0);
-    muxB.write(1);
-    muxA.write(0);
-}
-function setMux3(){ //set mux input to channel 3
-    muxC.write(0);
-    muxB.write(1);
-    muxA.write(1);
-}
-function setMux4(){ //set mux input to channel 4
-    muxC.write(1);
-    muxB.write(0);
-    muxA.write(0);
-}
-function setMux5(){ //set mux input to channel 5
-    muxC.write(1);
-    muxB.write(0);
-    muxA.write(1);
-}
-function setMux6(){ //set mux input to channel 6
-    muxC.write(1);
-    muxB.write(1);
-    muxA.write(0);
-}
-function setMux7(){ //set mux input to channel 7
-    muxC.write(1);
-    muxB.write(1);
-    muxA.write(1);
-}
-
-var ledState = true; //Boolean to hold the state of Led
-
-var express = require('express');
-var app = express();
-var path = require('path');
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-//var GoogleSpreadsheet = require("google-spreadsheet");
-
-//var my_sheet = new GoogleSpreadsheet('<1zNhnZOcdRuBETDI42NIp-M942_0rpXhX9trNpIWTiWA>');
-
+//Global variables
 var connectedUsersArray = [];
 var maxArray = []; //array to hold max values of photodiode readings
 var minArray = []; //array to hold min values of photodiode readings
 var userId;
-/*
-my_sheet.getRows( 1, function(err, row_data){
-    console.log( 'pulled in '+row_data.length + ' rows');
-});
 
+//Initialization
+var ledState = true; //Boolean to hold the state of Led
 
-var creds = require('./My Project-c91ed1eef404.json');
-
-my_sheet.useServiceAccountAuth(creds, function(err){
-    // getInfo returns info about the sheet and an array or "worksheet" objects 
-    my_sheet.getInfo( function( err, sheet_info ){
-        console.log( sheet_info.title + ' is loaded' );
-        // use worksheet object if you want to stop using the # in your calls 
- 
-        var sheet1 = sheet_info.worksheets[0];
-        sheet1.getRows( function( err, rows ){
-            rows[0].colname = 'new val';
-            rows[0].save(); //async and takes a callback 
-            rows[0].del();  //async and takes a callback 
-        });
-    });
-})
-*/
-
-
+//Socket.io listeners
 app.get('/', function(req, res) {
     //Join all arguments together and normalize the resulting path.
     res.sendFile(path.join(__dirname + '/client', 'index.html'));
@@ -226,6 +147,9 @@ http.listen(3000, function () {
      console.log('Web server Active listening on *:3000');
 });
 
+
+
+//Functions
 function getMins(){ //reads diode min values into minArray and sets leds on after
 
 
@@ -282,4 +206,61 @@ function getMaxs(){ //reads max values into maxArray from diodes and sets leds t
             console.log("max reads done");
             myOnboardLed.write(0);
             console.log("leds off");
+}
+
+//Use this instead
+/*
+function setMux(input) {
+    var binary = [];
+    var num = input;
+    while(num>=1) {
+        binary.unshift(num%2);
+        num = Math.floor(num/2);
+        muxA.write(binary[0]);
+        muxB.write(binary[1]);
+        muxC.write(binary[2]);
+    }
+    
+}
+*/
+
+function setMux0(){ //set mux input to channel 0
+    muxC.write(0);
+    muxB.write(0);
+    muxA.write(0);
+}
+function setMux1(){ //set mux input to channel 1
+    muxC.write(0);
+    muxB.write(0);
+    muxA.write(1);
+}
+function setMux2(){ //set mux input to channel 2
+    muxC.write(0);
+    muxB.write(1);
+    muxA.write(0);
+}
+function setMux3(){ //set mux input to channel 3
+    muxC.write(0);
+    muxB.write(1);
+    muxA.write(1);
+}
+function setMux4(){ //set mux input to channel 4
+    muxC.write(1);
+    muxB.write(0);
+    muxA.write(0);
+}
+function setMux5(){ //set mux input to channel 5
+    muxC.write(1);
+    muxB.write(0);
+    muxA.write(1);
+}
+function setMux6(){ //set mux input to channel 6
+    muxC.write(1);
+    muxB.write(1);
+    muxA.write(0);
+}
+function setMux7(){ //set mux input to channel 7
+    muxC.write(1);
+    muxB.write(1);
+    muxA.write(1);
 }
