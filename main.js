@@ -53,7 +53,7 @@ var connectedUsersArray = [];
 var maxArray = []; //array to hold max values of photodiode readings
 var minArray = []; //array to hold min values of photodiode readings
 var rawData = [];
-var transmittance = [];
+var absorbance = [];
 var userId;
 var timeStamp; //Timestamp to print to spreadsheet or database
 var measurementInterval = 1; //In minutes, time between measurements in a single trial
@@ -176,7 +176,7 @@ http.listen(3000, function () {
 
 
 //Functions
-function convertToTransmittance(data, cb) {
+function convertToAbsorbance(data, cb) {
     var convertedValues = data; //Temp for now
     //do the math to convert to transmittance
     cb(convertedValues);
@@ -184,36 +184,46 @@ function convertToTransmittance(data, cb) {
 }
 function startTrial() { //Starts the next trial immediately
 
-setInterval( function {
+    measurementsRun = 0;
+    var trialInterval = setInterval( function {
+
+        
+        rawData = []; // clears measurement buffer
+        timestamp = new Date(); // Gets current timestamp
+        myOnboardLed.write(1);
+        setMux0();
+        rawData.push(photoDiode.readFloat() * 100.0);
+        setMux1();
+        rawData.push(photoDiode.readFloat() * 100.0);
+        setMux2();
+        rawData.push(photoDiode.readFloat() * 100.0);
+        setMux3();
+        rawData.push(photoDiode.readFloat() * 100.0);
+        setMux4();
+        rawData.push(photoDiode.readFloat() * 100.0);
+        setMux5();
+        rawData.push(photoDiode.readFloat() * 100.0);
+        setMux6();
+        rawData.push(photoDiode.readFloat() * 100.0);
+        setMux7();
+        rawData.push(photoDiode.readFloat() * 100.0);
+        myOnboardLed.write(0);
+        convertToAbsorbance(rawData, function(convertedValues) {
+            absorbance = convertedValues;
+            }
+        );
+
+        //Upload to Google Spreadsheets
 
 
-    rawData = []; // clears measurement buffer
-    timestamp = new Date(); // Gets current timestamp
-    myOnboardLed.write(1);
-    setMux0();
-    rawData.push(photoDiode.readFloat() * 100.0);
-    setMux1();
-    rawData.push(photoDiode.readFloat() * 100.0);
-    setMux2();
-    rawData.push(photoDiode.readFloat() * 100.0);
-    setMux3();
-    rawData.push(photoDiode.readFloat() * 100.0);
-    setMux4();
-    rawData.push(photoDiode.readFloat() * 100.0);
-    setMux5();
-    rawData.push(photoDiode.readFloat() * 100.0);
-    setMux6();
-    rawData.push(photoDiode.readFloat() * 100.0);
-    setMux7();
-    rawData.push(photoDiode.readFloat() * 100.0);
-    myOnboardLed.write(0);
-    convertToTransmittance(rawData, function(convertedValues) {
-        transmittance = convertedValues;
-        };
-    );
+        measurementsRun++;
+        if(measurementsRun>= numOfMeasurements) {
+            clearInterval(trialInterval);
+        }
 
 
-};, measurementInterval * 60000)
+
+    }, measurementInterval * 60000);
 
 
 }
