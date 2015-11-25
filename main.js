@@ -60,7 +60,7 @@ var measurementInterval = 1; //In minutes, time between measurements in a single
 var timeToStartTrial; //Time to start the measurements
 var numOfMeasurements = 10; //Number of measurements to run in a single trial
 var measurementsRun = 0; //Number of measurements run so far
-var trialNumber; //Next trial being run
+//var trialNumber; //Next trial being run
 var connectedToGoogle = false;
 
 
@@ -177,19 +177,27 @@ http.listen(3000, function () {
 
 //Functions
 function convertToAbsorbance(data, cb) {
-    var convertedValues = data; //Temp for now
+    var convertedValues = []
+    convertedValues = data; //Temp for now
     //do the math to convert to transmittance
     cb(convertedValues);
 
 }
 function startTrial() { //Starts the next trial immediately
 
+
+	
+
+
     measurementsRun = 0;
     var trialInterval = setInterval( function {
 
-        
+        spreadsheet.receive(function(err, rows, info) {
+       	//console.log(info.lastRow);
+       	nextRow = info['nextRow']; 
+
         rawData = []; // clears measurement buffer
-        timestamp = new Date(); // Gets current timestamp
+        timeStamp = new Date().toString(); // Gets current timestamp
         myOnboardLed.write(1);
         setMux0();
         rawData.push(photoDiode.readFloat() * 100.0);
@@ -213,15 +221,31 @@ function startTrial() { //Starts the next trial immediately
             }
         );
 
-        //Upload to Google Spreadsheets
+        var obj = {};
+         obj[nextRow] = [[timeStamp, measurementsRun, 0, absorbance[0]], 
+                            [timeStamp, measurementsRun, 1, absorbance[1]],
+                            [timeStamp, measurementsRun, 2, absorbance[2]],
+                            [timeStamp, measurementsRun, 3, absorbance[3]], 
+                            [timeStamp, measurementsRun, 4, absorbance[4]], 
+                            [timeStamp, measurementsRun, 5, absorbance[5]], 
+                            [timeStamp, measurementsRun, 6, absorbance[6]], 
+                            [timeStamp, measurementsRun, 7, absorbance[7]]
+                            ];
+         spreadsheet.add(obj);
 
+        spreadsheet.send(function(err) {
+            if(err) throw err;
+            console.log("Updated doc");
+        });       
+
+
+
+   });        
 
         measurementsRun++;
         if(measurementsRun>= numOfMeasurements) {
             clearInterval(trialInterval);
         }
-
-
 
     }, measurementInterval * 60000);
 
