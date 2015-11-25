@@ -177,8 +177,12 @@ http.listen(3000, function () {
 
 //Functions
 function convertToAbsorbance(data, cb) {
-    var convertedValues = data; //Temp for now
+    var convertedValues = []; //Temp for now
+    for(var i = 0; i < data.length; ++i){
+        convertedValues[i] = Math.log((maxArray[i]-minArray[i])/(data[i]-minArray[i]));
+    }
     //do the math to convert to transmittance
+    
     cb(convertedValues);
 
 }
