@@ -35,6 +35,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 //Pin setups
+
 var myOnboardLed = new mraa.Gpio(8); //LED hooked up to digital pin 8
 myOnboardLed.dir(mraa.DIR_OUT);//set the gpio direction to output
 var photoDiode = new mraa.Aio(0);
@@ -56,12 +57,13 @@ var rawData = [];
 var absorbance = [];
 var userId;
 var timeStamp; //Timestamp to print to spreadsheet or database
-var measurementInterval = 1; //In minutes, time between measurements in a single trial
+var measurementInterval = 20; //In minutes, time between measurements in a single trial
 var timeToStartTrial; //Time to start the measurements
 var numOfMeasurements = 10; //Number of measurements to run in a single trial
 var measurementsRun = 0; //Number of measurements run so far
 //var trialNumber; //Next trial being run
 var connectedToGoogle = false;
+//var spreadsheet;
 
 
 //Initialization
@@ -78,290 +80,306 @@ Spreadsheet.load({
          }
     }, function run(err, spreadsheet) {
         if(err) throw err;
- 
+         //spreadsheet = sheet;
         connectedToGoogle = true;
-    });
+        //Socket.io listeners
+        app.get('/', function(req, res) {
+            //Join all arguments together and normalize the resulting path.
+            res.sendFile(path.join(__dirname + '/client', 'index.html'));
+        });
 
-//Socket.io listeners
-app.get('/', function(req, res) {
-    //Join all arguments together and normalize the resulting path.
-    res.sendFile(path.join(__dirname + '/client', 'index.html'));
-});
+        //Allow use of files in client folder
+        app.use(express.static(__dirname + '/client'));
+        app.use('/client', express.static(__dirname + '/client'));
 
-//Allow use of files in client folder
-app.use(express.static(__dirname + '/client'));
-app.use('/client', express.static(__dirname + '/client'));
-
-//Socket.io Event handlers
-io.on('connection', function(socket) {
-    if (connectedUsersArray.length > 0) {
-        io.emit('sorry', {value: "A User is Already Connected!! \n YOU WILL NOW BE DISCONNECTED"});
-        io.emit('user disconnect', {value: "No User"});
-        //var element = connectedUsersArray[connectedUsersArray.length - 1];
-        //userId = 'u' + (parseInt(element.replace("u", "")) + 1);
-        return;
-    }
-    else {
-        console.log("\n Add new User: Master");
-        userId = "Master";
-    }
-    console.log('a user connected: ' + userId);
-    io.emit('user connect', userId);
-    connectedUsersArray.push(userId);
-    console.log('You are number: ' + connectedUsersArray.length);
-    console.log('User has Connected: ' + connectedUsersArray);
-
-    socket.on('user disconnect', function (msg) {
-        if(msg === "Master"){
-            console.log('remove: ' + msg);
-            connectedUsersArray.splice(connectedUsersArray.lastIndexOf(msg), 1);
-            io.emit('user disconnect', msg);
-        }
-        else{
-            socket.emit('disconnect', msg);
-        }
-    });
-    
-    socket.on('disconnect', function(){
-        if(connectedUsersArray[0] === "Master"){
-            console.log('remove: Master');
-            connectedUsersArray.splice(connectedUsersArray.lastIndexOf("Master"), 1);
-            io.emit('user disconnect', "Master");
-        }
-    });
-
-    //socket.on('chat message', function (msg) {
-    //    io.emit('chat message', msg);
-    //    console.log('message: ' + msg.value);
-    //});
-
-    socket.on('toogle led', function (msg) {
-        myOnboardLed.write(ledState ? 1 : 0); /*if ledState is true then write a '1' (high) otherwise write a '0' (low)*/
-        msg.value = ledState;
-        io.emit('toogle led', msg);
-        ledState = !ledState; //invert the ledState
-    });
-
-    socket.on('diode read', function (msg) {
-        msg.value = (photoDiode.readFloat() * 100.0);
-        console.log(msg.value);
-        io.emit('diode read', msg);
-    });
-    
-    socket.on('calibrate range', function(msg){
-        if(!ledState){ //if leds are on, alert user
-            msg.value = "Error. You must calibrate when the LEDS are off!";
-            io.emit('led on error', msg);
-        }
-        else{ //otherwise, send confirm dialog to user
-            minArray.splice(0, minArray.length); //clear min array
-            maxArray.splice(0, minArray.length); //clear max array
-            msg.value  = "Click OK to continue when test tubes with pure water are in the device.\n Click CANCEL to cancel";
-            
-            io.emit('calibrate alert', msg);
-        }
-    });
-    
-    socket.on('calibrate confirm', function(msg){
-
-            getMins(); //get min diode readings
-            setTimeout(getMaxs, 1000); //wait 1 second for LEDs to warm up, then get max diode readings
-    });
-
-});
-http.listen(3000, function () {
-     console.log('Web server Active listening on *:3000');
-});
-
-
-
-//Functions
-function convertToAbsorbance(data, cb) {
-    var convertedValues = []
-    convertedValues = data; //Temp for now
-    //do the math to convert to transmittance
-    cb(convertedValues);
-
-}
-function startTrial() { //Starts the next trial immediately
-
-
-	
-
-
-    measurementsRun = 0;
-    var trialInterval = setInterval( function {
-
-        spreadsheet.receive(function(err, rows, info) {
-       	//console.log(info.lastRow);
-       	nextRow = info['nextRow']; 
-
-        rawData = []; // clears measurement buffer
-        timeStamp = new Date().toString(); // Gets current timestamp
-        myOnboardLed.write(1);
-        setMux0();
-        rawData.push(photoDiode.readFloat() * 100.0);
-        setMux1();
-        rawData.push(photoDiode.readFloat() * 100.0);
-        setMux2();
-        rawData.push(photoDiode.readFloat() * 100.0);
-        setMux3();
-        rawData.push(photoDiode.readFloat() * 100.0);
-        setMux4();
-        rawData.push(photoDiode.readFloat() * 100.0);
-        setMux5();
-        rawData.push(photoDiode.readFloat() * 100.0);
-        setMux6();
-        rawData.push(photoDiode.readFloat() * 100.0);
-        setMux7();
-        rawData.push(photoDiode.readFloat() * 100.0);
-        myOnboardLed.write(0);
-        convertToAbsorbance(rawData, function(convertedValues) {
-            absorbance = convertedValues;
+        //Socket.io Event handlers
+        io.on('connection', function(socket) {
+            if (connectedUsersArray.length > 0) {
+                io.emit('sorry', {value: "A User is Already Connected!! \n YOU WILL NOW BE DISCONNECTED"});
+                io.emit('user disconnect', {value: "No User"});
+                //var element = connectedUsersArray[connectedUsersArray.length - 1];
+                //userId = 'u' + (parseInt(element.replace("u", "")) + 1);
+                return;
             }
-        );
+            else {
+                console.log("\n Add new User: Master");
+                userId = "Master";
+            }
+            console.log('a user connected: ' + userId);
+            io.emit('user connect', userId);
+            connectedUsersArray.push(userId);
+            console.log('You are number: ' + connectedUsersArray.length);
+            console.log('User has Connected: ' + connectedUsersArray);
 
-        var obj = {};
-         obj[nextRow] = [[timeStamp, measurementsRun, 0, absorbance[0]], 
-                            [timeStamp, measurementsRun, 1, absorbance[1]],
-                            [timeStamp, measurementsRun, 2, absorbance[2]],
-                            [timeStamp, measurementsRun, 3, absorbance[3]], 
-                            [timeStamp, measurementsRun, 4, absorbance[4]], 
-                            [timeStamp, measurementsRun, 5, absorbance[5]], 
-                            [timeStamp, measurementsRun, 6, absorbance[6]], 
-                            [timeStamp, measurementsRun, 7, absorbance[7]]
-                            ];
-         spreadsheet.add(obj);
+            socket.on('user disconnect', function (msg) {
+                if(msg === "Master"){
+                    console.log('remove: ' + msg);
+                    connectedUsersArray.splice(connectedUsersArray.lastIndexOf(msg), 1);
+                    io.emit('user disconnect', msg);
+                }
+                else{
+                    socket.emit('disconnect', msg);
+                }
+            });
+            
+            socket.on('disconnect', function(){
+                if(connectedUsersArray[0] === "Master"){
+                    console.log('remove: Master');
+                    connectedUsersArray.splice(connectedUsersArray.lastIndexOf("Master"), 1);
+                    io.emit('user disconnect', "Master");
+                }
+            });
 
-        spreadsheet.send(function(err) {
-            if(err) throw err;
-            console.log("Updated doc");
-        });       
+            //socket.on('chat message', function (msg) {
+            //    io.emit('chat message', msg);
+            //    console.log('message: ' + msg.value);
+            //});
+
+            socket.on('toogle led', function (msg) {
+                myOnboardLed.write(ledState ? 1 : 0); /*if ledState is true then write a '1' (high) otherwise write a '0' (low)*/
+                msg.value = ledState;
+                io.emit('toogle led', msg);
+                ledState = !ledState; //invert the ledState
+            });
+
+            socket.on('diode read', function (msg) {
+               // msg.value = (photoDiode.readFloat() * 100.0);
+               msg.value = 0;
+                //console.log(msg.value);
+                console.log("starting trial");
+
+
+                measurementsRun = 0;
+                var trialInterval = setInterval( function() {
+                        socket.on('cancel', function() {
+                            clearInterval(trialInterval);
+                        });
+                        console.log("Taking measurements");
+                        spreadsheet.receive(function(err, rows, info) {
+                        //console.log(info.lastRow);
+                        var nextRow = info['nextRow']; 
+
+                        rawData = []; // clears measurement buffer
+                        timeStamp = new Date().toString(); // Gets current timestamp
+                        
+                        myOnboardLed.write(1);
+                        setMux0();
+                        rawData.push(photoDiode.readFloat() * 100.0);
+                        setMux1();
+                        rawData.push(photoDiode.readFloat() * 100.0);
+                        setMux2();
+                        rawData.push(photoDiode.readFloat() * 100.0);
+                        setMux3();
+                        rawData.push(photoDiode.readFloat() * 100.0);
+                        setMux4();
+                        rawData.push(photoDiode.readFloat() * 100.0);
+                        setMux5();
+                        rawData.push(photoDiode.readFloat() * 100.0);
+                        setMux6();
+                        rawData.push(photoDiode.readFloat() * 100.0);
+                        setMux7();
+                        rawData.push(photoDiode.readFloat() * 100.0);
+                        myOnboardLed.write(0);
+                        
+                        //rawData = [10,20,30,40,50,60,70,80];
+                        convertToAbsorbance(rawData, function(convertedValues) {
+                            absorbance = convertedValues;
+                            }
+                        );
+
+                        var obj = {};
+                         obj[nextRow] = [[timeStamp, measurementsRun, 0, absorbance[0]], 
+                                            [timeStamp, measurementsRun, 1, absorbance[1]],
+                                            [timeStamp, measurementsRun, 2, absorbance[2]],
+                                            [timeStamp, measurementsRun, 3, absorbance[3]], 
+                                            [timeStamp, measurementsRun, 4, absorbance[4]], 
+                                            [timeStamp, measurementsRun, 5, absorbance[5]], 
+                                            [timeStamp, measurementsRun, 6, absorbance[6]], 
+                                            [timeStamp, measurementsRun, 7, absorbance[7]]
+                                            ];
+                         spreadsheet.add(obj);
+
+                        spreadsheet.send(function(err) {
+                            if(err) throw err;
+                            console.log("Updated doc");
+                        });    
+                   });        
+
+                        measurementsRun++;
+                        if(measurementsRun>= numOfMeasurements) {
+                            clearInterval(trialInterval);
+                        }
+
+            }, measurementInterval * 1000);
+
+                io.emit('diode read', msg);
+            });
+            
+            socket.on('calibrate range', function(msg){
+                if(!ledState){ //if leds are on, alert user
+                    msg.value = "Error. You must calibrate when the LEDS are off!";
+                    io.emit('led on error', msg);
+                }
+                else{ //otherwise, send confirm dialog to user
+                    minArray.splice(0, minArray.length); //clear min array
+                    maxArray.splice(0, minArray.length); //clear max array
+                    msg.value  = "Click OK to continue when test tubes with pure water are in the device.\n Click CANCEL to cancel";
+                    
+                    io.emit('calibrate alert', msg);
+                }
+            });
+            
+            socket.on('calibrate confirm', function(msg){
+
+                    getMins(); //get min diode readings
+                    setTimeout(getMaxs, 1000); //wait 1 second for LEDs to warm up, then get max diode readings
+            });
+
+        });
+        http.listen(3000, function () {
+             console.log('Web server Active listening on *:3000');
+        });
 
 
 
-   });        
+        //Functions
+        function convertToAbsorbance(data, cb) {
+            var convertedValues = []; //Temp for now
+            for(var i = 0; i < data.length; ++i){
+                convertedValues[i] = Math.log((maxArray[i]-minArray[i])/(data[i]-minArray[i]));
+            }
+            //do the math to convert to transmittance
+            
+            cb(convertedValues);
 
-        measurementsRun++;
-        if(measurementsRun>= numOfMeasurements) {
-            clearInterval(trialInterval);
+        }
+        function startTrial() { //Starts the next trial immediately
+
+
+            
+
+        }
+        function getMins(){ //reads diode min values into minArray and sets leds on after
+
+
+                    /*minArray = [];
+                    for(i = 0; i < 8; i++) {
+                        setMux(i);
+                        minArray.push(photoDiode.readFloat() * 100.0);
+                    }
+                    */
+                    
+                    setMux0();
+                    minArray.push(photoDiode.readFloat() * 100.0);
+                    setMux1();
+                    minArray.push(photoDiode.readFloat() * 100.0);
+                    setMux2();
+                    minArray.push(photoDiode.readFloat() * 100.0);
+                    setMux3();
+                    minArray.push(photoDiode.readFloat() * 100.0);
+                    setMux4();
+                    minArray.push(photoDiode.readFloat() * 100.0);
+                    setMux5();
+                    minArray.push(photoDiode.readFloat() * 100.0);
+                    setMux6();
+                    minArray.push(photoDiode.readFloat() * 100.0);
+                    setMux7();
+                    minArray.push(photoDiode.readFloat() * 100.0);
+                    
+                   // minArray = [0,0,0,0,0,0,0,0];
+                    console.log("min reads done");
+                    myOnboardLed.write(1);
+                    console.log("test");
+        }
+        function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
+
+                    /*maxArray = [];
+                    for(i = 0; i < 8; i++) {
+                        setMux(i);
+                        maxArray.push(photoDiode.readFloat() * 100.0);
+                    }
+                    */
+                    
+                    setMux0();
+                    maxArray.push(photoDiode.readFloat() * 100.0);
+                    setMux1();
+                    maxArray.push(photoDiode.readFloat() * 100.0);
+                    setMux2();
+                    maxArray.push(photoDiode.readFloat() * 100.0);
+                    setMux3();
+                    maxArray.push(photoDiode.readFloat() * 100.0);
+                    setMux4();
+                    maxArray.push(photoDiode.readFloat() * 100.0);
+                    setMux5();
+                    maxArray.push(photoDiode.readFloat() * 100.0);
+                    setMux6();
+                    maxArray.push(photoDiode.readFloat() * 100.0);
+                    setMux7();
+                    maxArray.push(photoDiode.readFloat() * 100.0);
+                    
+                    //maxArray = [100,100,100,100,100,100,100,100];
+                    console.log("max reads done");
+                    myOnboardLed.write(0);
+                    console.log("leds off");
         }
 
-    }, measurementInterval * 60000);
+        //Use this instead
+        /*
+        function setMux(input) {
+            var binary = [];
+            var num = input;
+            while(num>=1) {
+                binary.unshift(num%2);
+                num = Math.floor(num/2);
+                muxA.write(binary[0]);
+                muxB.write(binary[1]);
+                muxC.write(binary[2]);
+            }
+            
+        }
+        */
+        
+        function setMux0(){ //set mux input to channel 0
+            muxC.write(0);
+            muxB.write(0);
+            muxA.write(0);
+        }
+        function setMux1(){ //set mux input to channel 1
+            muxC.write(0);
+            muxB.write(0);
+            muxA.write(1);
+        }
+        function setMux2(){ //set mux input to channel 2
+            muxC.write(0);
+            muxB.write(1);
+            muxA.write(0);
+        }
+        function setMux3(){ //set mux input to channel 3
+            muxC.write(0);
+            muxB.write(1);
+            muxA.write(1);
+        }
+        function setMux4(){ //set mux input to channel 4
+            muxC.write(1);
+            muxB.write(0);
+            muxA.write(0);
+        }
+        function setMux5(){ //set mux input to channel 5
+            muxC.write(1);
+            muxB.write(0);
+            muxA.write(1);
+        }
+        function setMux6(){ //set mux input to channel 6
+            muxC.write(1);
+            muxB.write(1);
+            muxA.write(0);
+        }
+        function setMux7(){ //set mux input to channel 7
+            muxC.write(1);
+            muxB.write(1);
+            muxA.write(1);
+        }
+        
 
+    });
 
-}
-function getMins(){ //reads diode min values into minArray and sets leds on after
-
-
-			/*minArray = [];
-			for(i = 0; i < 8; i++) {
-				setMux(i);
-				minArray.push(photoDiode.readFloat() * 100.0);
-			}
-			*/
-            setMux0();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux1();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux2();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux3();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux4();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux5();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux6();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            setMux7();
-            minArray.push(photoDiode.readFloat() * 100.0);
-            console.log("min reads done");
-            myOnboardLed.write(1);
-            console.log("leds on");
-}
-function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
-
-			/*maxArray = [];
-			for(i = 0; i < 8; i++) {
-				setMux(i);
-				maxArray.push(photoDiode.readFloat() * 100.0);
-			}
-			*/
-            setMux0();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux1();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux2();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux3();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux4();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux5();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux6();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            setMux7();
-            maxArray.push(photoDiode.readFloat() * 100.0);
-            console.log("max reads done");
-            myOnboardLed.write(0);
-            console.log("leds off");
-}
-
-//Use this instead
-/*
-function setMux(input) {
-    var binary = [];
-    var num = input;
-    while(num>=1) {
-        binary.unshift(num%2);
-        num = Math.floor(num/2);
-        muxA.write(binary[0]);
-        muxB.write(binary[1]);
-        muxC.write(binary[2]);
-    }
-    
-}
-*/
-
-function setMux0(){ //set mux input to channel 0
-    muxC.write(0);
-    muxB.write(0);
-    muxA.write(0);
-}
-function setMux1(){ //set mux input to channel 1
-    muxC.write(0);
-    muxB.write(0);
-    muxA.write(1);
-}
-function setMux2(){ //set mux input to channel 2
-    muxC.write(0);
-    muxB.write(1);
-    muxA.write(0);
-}
-function setMux3(){ //set mux input to channel 3
-    muxC.write(0);
-    muxB.write(1);
-    muxA.write(1);
-}
-function setMux4(){ //set mux input to channel 4
-    muxC.write(1);
-    muxB.write(0);
-    muxA.write(0);
-}
-function setMux5(){ //set mux input to channel 5
-    muxC.write(1);
-    muxB.write(0);
-    muxA.write(1);
-}
-function setMux6(){ //set mux input to channel 6
-    muxC.write(1);
-    muxB.write(1);
-    muxA.write(0);
-}
-function setMux7(){ //set mux input to channel 7
-    muxC.write(1);
-    muxB.write(1);
-    muxA.write(1);
-}
