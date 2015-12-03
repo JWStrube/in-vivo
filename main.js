@@ -63,7 +63,6 @@ var numOfMeasurements = 10; //Number of measurements to run in a single trial
 var measurementsRun = 0; //Number of measurements run so far
 //var trialNumber; //Next trial being run
 var connectedToGoogle = false;
-var cancelMeasurements = false;
 //var spreadsheet;
 
 
@@ -144,7 +143,7 @@ Spreadsheet.load({
             });
             
             socket.on('cancel', function(msg) {
-                cancelMeasurements = true;
+                clearInterval(trialInterval);
                 io.emit('toggle diode', msg);
             });
 
@@ -157,10 +156,6 @@ Spreadsheet.load({
 
                 measurementsRun = 0;
                 var trialInterval = setInterval( function() {
-                        if(cancelMeasurements) {
-                            clearInterval(trialInterval);
-                            cancelMeasurements = false;
-                        }
                         console.log("Taking measurements");
                         spreadsheet.receive(function(err, rows, info) {
                         //console.log(info.lastRow);
@@ -263,7 +258,10 @@ Spreadsheet.load({
         function convertToAbsorbance(data, cb) {
             var convertedValues = []; //Temp for now
             for(var i = 0; i < data.length; ++i){
-                convertedValues[i] = Math.log((maxArray[i]-minArray[i])/(data[i]-minArray[i]));
+                convertedValues[i] = Math.log((maxArray[i]-minArray[i])/(data[i]-minArray[i]))/Math.log(10);
+                //convertedValues[i] = 2-(Math.log((data[i]-minArray[i])/(maxArray[i]-minArray[i])))/Math.log(10);
+                //console.log(Math.log((maxArray[i]-minArray[i])/(data[i]-minArray[i])));
+                //console.log(2-Math.log10((data[i]-minArray[i])/(maxArray[i]-minArray[i])));
 
             }
             //do the math to convert to transmittance
@@ -306,7 +304,6 @@ Spreadsheet.load({
                    // minArray = [0,0,0,0,0,0,0,0];
                     console.log("min reads done");
                     myOnboardLed.write(1);
-                    console.log("test");
         }
         function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
 
