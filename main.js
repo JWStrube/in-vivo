@@ -63,6 +63,7 @@ var numOfMeasurements = 10; //Number of measurements to run in a single trial
 var measurementsRun = 0; //Number of measurements run so far
 //var trialNumber; //Next trial being run
 var connectedToGoogle = false;
+var cancelMeasurements = false;
 //var spreadsheet;
 
 
@@ -143,7 +144,7 @@ Spreadsheet.load({
             });
             
             socket.on('cancel', function(msg) {
-                clearInterval(trialInterval);
+                cancelMeasurements = true;
                 io.emit('toggle diode', msg);
             });
 
@@ -156,6 +157,10 @@ Spreadsheet.load({
 
                 measurementsRun = 0;
                 var trialInterval = setInterval( function() {
+                        if(cancelMeasurements) {
+                            clearInterval(trialInterval);
+                            cancelMeasurements = false;
+                        }
                         console.log("Taking measurements");
                         spreadsheet.receive(function(err, rows, info) {
                         //console.log(info.lastRow);
