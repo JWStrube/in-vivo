@@ -21,8 +21,8 @@
         "name": "LICENSE.md"
       },
       "main.js": {
-        "previousModTime": 1449106894299,
-        "modified": 1449106894299,
+        "previousModTime": 1449108790544,
+        "modified": 1449108790544,
         "seen": true,
         "name": "main.js"
       },
@@ -45,8 +45,8 @@
         "name": "webSocketsTemplate.xdk"
       },
       "webSocketsTemplate.xdke": {
-        "previousModTime": 1449106644886,
-        "modified": 1449106644886,
+        "previousModTime": 1449110009203,
+        "modified": 1449110009203,
         "seen": true,
         "name": "webSocketsTemplate.xdke"
       },
@@ -75,14 +75,14 @@
         "name": "client/index.css"
       },
       "client/index.html": {
-        "previousModTime": 1449105485043,
-        "modified": 1449105485043,
+        "previousModTime": 1449110000760,
+        "modified": 1449110000760,
         "seen": true,
         "name": "client/index.html"
       },
       "client/index.js": {
-        "previousModTime": 1449106894299,
-        "modified": 1449106894299,
+        "previousModTime": 1449110284828,
+        "modified": 1449110284828,
         "seen": true,
         "name": "client/index.js"
       },
@@ -184,11 +184,8 @@
       }
     },
     "boardFileStatus": {
-      "main.js": {
-        "previousModTime": 1449106901906
-      },
       "client/index.js": {
-        "previousModTime": 1449106901906
+        "previousModTime": 1449110292322
       }
     }
   }

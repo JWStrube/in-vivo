@@ -79,11 +79,12 @@ socket.on('toggle diode', function(msg){
     if($("#diode-link").hasClass('active')){
         $("#diode-link").removeClass('active').on('click');
         $("#diode-link").addClass('cancel').on('click');
+        $("#diode-link").text('Cancel');
     }
     else if($("#diode-link").hasClass('cancel')){
         $("#diode-link").removeClass('cancel').on('click');
         $("#diode-link").addClass('active').on('click');
-
+        $("#diode-link").text('Perform Measurement(s)');
     }
 });
 
