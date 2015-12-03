@@ -2,11 +2,10 @@ var socket = io();
 var userId = "user";
 
 
-//$('form').submit(function() {
-//    socket.emit('chat message', {value: $('#m').val(), userId: userId});
-//   $('#m').val('');
-//    return false;
-//});
+$('form').submit(function() {
+    socket.emit('update intervals', {mInterval: $('#mInterval').val(), numMeas: $('#numMeas').val()});
+    return false;
+});
 
 $("#led-link").on('click', function(e){
     socket.emit('toogle led', {value: 0, userId: userId});
@@ -20,6 +19,8 @@ $("#calibrate-link").on('click', function(e){
 $("#diode-link").on('click', function(e){
     if($(this).hasClass('active'))
         socket.emit('diode read', {value: 0, userId: userId});
+    else if($(this).hasClass('cancel'))
+        socket.emit('cancel', {value: 0, userId: userId});
 });
 
 socket.on('diode read', function(msg){
@@ -72,6 +73,18 @@ socket.on('sorry', function(msg){
 
 socket.on('led on error', function(msg){
     alert(msg.value);
+});
+
+socket.on('toggle diode', function(msg){
+    if($("#diode-link").hasClass('active')){
+        $("#diode-link").removeClass('active').on('click');
+        $("#diode-link").addClass('cancel').on('click');
+    }
+    else if($("#diode-link").hasClass('cancel')){
+        $("#diode-link").removeClass('cancel').on('click');
+        $("#diode-link").addClass('active').on('click');
+
+    }
 });
 
 socket.on('calibrate alert', function(msg){

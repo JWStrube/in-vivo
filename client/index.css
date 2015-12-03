@@ -5,11 +5,7 @@
 }
 
 html {
-    background-image: url(background-spring.PNG);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position-x: -360px;
-    min-height: 100%;
+    background-color: beige;
 }
 
 body {
@@ -32,6 +28,7 @@ body {
 
 .container {
     padding: 1em 0em;
+    text-align: center;
 }
 
 .sub-title {
@@ -120,7 +117,7 @@ body {
     margin: 1em 1em;
     color: #808080;
     font-weight: bold;
-    font-size: 1.3em;
+    font-size: 1.6em;
     border: 2px solid currentColor;
     border-radius: 5px;
 }
@@ -128,12 +125,23 @@ body {
 #diode-link.active{
     pointer-events: auto;
     margin: 1em 1em;
-    color: #3498db;
+    color: green;
     font-weight: bold;
-    font-size: 1.3em;
+    font-size: 1.6em;
     border: 2px solid currentColor;
     border-radius: 5px;
 }
+
+#diode-link.cancel{
+    pointer-events: auto;
+    margin: 1em 1em;
+    color: red;
+    font-weight: bold;
+    font-size: 1.6em;
+    border: 2px solid currentColor;
+    border-radius: 5px;
+}
+
 
 #calibrate-link{
     margin: 1em 1em;
@@ -151,6 +159,7 @@ body {
 
 #diode-link-container{
     margin-top: 1em;
+    text-align: center;
 }
 
 #calibrate-link-container{
@@ -165,23 +174,27 @@ body {
 }
 
 form {
-    background: rgb(17,94,162);
+    background: ;
     padding: 3px;
     position: fixed;
-    bottom: 0;
     width: 100%
 }
 
 form input {
     border: 0;
+    text-align: center;
     padding: 10px;
-    width: 85%;
+    width: 50%;
     margin-right: .5%
 }
 
+#center-form{
+    text-align: center;
+}
+
 form button {
-    width: 13%;
-    background: #FFD630;
+    width: 50%;
+    background: rgb(17,94,162);
     font-weight: bold;
     border: none;
     padding: 10px 3px;

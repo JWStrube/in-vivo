@@ -141,6 +141,11 @@ Spreadsheet.load({
                 io.emit('toogle led', msg);
                 ledState = !ledState; //invert the ledState
             });
+            
+            socket.on('cancel', function(msg) {
+                clearInterval(trialInterval);
+                io.emit('toggle diode', msg);
+            });
 
             socket.on('diode read', function (msg) {
                // msg.value = (photoDiode.readFloat() * 100.0);
@@ -151,9 +156,6 @@ Spreadsheet.load({
 
                 measurementsRun = 0;
                 var trialInterval = setInterval( function() {
-                        socket.on('cancel', function() {
-                            clearInterval(trialInterval);
-                        });
                         console.log("Taking measurements");
                         spreadsheet.receive(function(err, rows, info) {
                         //console.log(info.lastRow);
@@ -213,6 +215,7 @@ Spreadsheet.load({
             }, measurementInterval * 1000);
 
                 io.emit('diode read', msg);
+                io.emit('toggle diode', msg);
             });
             
             socket.on('calibrate range', function(msg){
@@ -234,6 +237,14 @@ Spreadsheet.load({
                     getMins(); //get min diode readings
                     setTimeout(getMaxs, 1000); //wait 1 second for LEDs to warm up, then get max diode readings
             });
+            
+            socket.on('update intervals', function(msg){
+                //{mInterval: $('#mInterval').val(), numMeas: $('#numMeas').val()});
+                measurementInterval = msg.mInterval;
+                numOfMeasurements = msg.numMeas;
+                console.log('measurement interval: ' + measurementInterval + '\nNumber of Measurements: ' + numOfMeasurements);
+            });
+
 
         });
         http.listen(3000, function () {
