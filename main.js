@@ -263,7 +263,7 @@ Spreadsheet.load({
         function convertToAbsorbance(data, cb) {
             var convertedValues = []; //Temp for now
             for(var i = 0; i < data.length; ++i){
-                convertedValues[i] = Math.log((maxArray[i]-minArray[i])/(data[i]-minArray[i]));
+                convertedValues[i] = Math.log((maxArray[i]-minArray[i])/(data[i]-minArray[i]))/Math.log(10);
 
             }
             //do the math to convert to transmittance
@@ -306,7 +306,7 @@ Spreadsheet.load({
                    // minArray = [0,0,0,0,0,0,0,0];
                     console.log("min reads done");
                     myOnboardLed.write(1);
-                    console.log("test");
+                    //console.log("test");
         }
         function getMaxs(){ //reads max values into maxArray from diodes and sets leds to off after
 
